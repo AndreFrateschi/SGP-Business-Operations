@@ -35,3 +35,11 @@
 :root[data-theme="dark"] dialog .modal-head{border-color:#344452}
 :root[data-theme="dark"] .callout{background:#253643;border-color:#405260;color:#d9e4ec}
 :root[data-theme="dark"] .form-error{color:#ff9fbb}
+:root[data-theme="dark"] #filters{background:#26333e;border-color:#43525e;box-shadow:0 2px 8px #0003}
+:root[data-theme="dark"] #filters select{background:#33434f;color:#eef3f7;border-color:#50616d}
+:root[data-theme="dark"] #filters input{background:#33434f;color:#eef3f7;border-color:#50616d}
+:root[data-theme="dark"] #filters label{color:#c6d2db}
+:root[data-theme="dark"] .donut>div{background:#26333e;color:#f1f5f8;box-shadow:0 0 0 1px #50616d}
+:root[data-theme="dark"] .donut>div span{color:#c1ced7}
+:root[data-theme="dark"] .status-list{color:#dce6ed}
+:root[data-theme="dark"] .status-list b{color:#f4f7fa}

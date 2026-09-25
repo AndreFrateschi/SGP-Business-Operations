@@ -43,3 +43,4 @@
 :root[data-theme="dark"] .donut>div span{color:#c1ced7}
 :root[data-theme="dark"] .status-list{color:#dce6ed}
 :root[data-theme="dark"] .status-list b{color:#f4f7fa}
+.kpi[title]{cursor:help}.kpi[title]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}

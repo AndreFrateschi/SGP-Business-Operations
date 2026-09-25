@@ -4,7 +4,8 @@ const $=s=>document.querySelector(s),e=SGP.esc;let data,loadError='',rollback=nu
 try{data=SGP.storage.load();const v=SGP.validate(data);if(v.errors.length)throw new Error(v.errors[0])}catch(err){data=SGP.empty();loadError='Não foi possível abrir a base local. O conteúdo original foi preservado. Exporte o backup de recuperação em Configurações antes de restaurar a demonstração.'}
 const defaults={page:'Visão Geral',scale:'Mês',group:'front',closed:[],anchor:SGP.today().slice(0,7)+'-01',deliveryDays:30,capMode:'front',personMode:'pessoas',filters:{front:'',leader:'',pmo:'',plan:'',status:'',phase:'',risk:'',search:'',from:'',to:''}};
 let saved={};try{saved=JSON.parse(localStorage.getItem('sgp-view')||'{}')}catch{}
-const state={...defaults,...saved,filters:{...defaults.filters,...saved.filters},page:'Visão Geral'};
+const savedTheme=localStorage.getItem('sgp-theme')||'light';document.documentElement.dataset.theme=savedTheme;
+const state={......saved,filters:{...defaults.filters,...saved.filters},page:'Visão Geral'};
 const paths=['M3 10l9-7 9 7v11H3z M9 21v-8h6v8','M4 5h16v16H4z M4 10h16 M8 2v6 M16 2v6','M8 6h13 M8 12h13 M8 18h13 M3 6h1 M3 12h1 M3 18h1','M3 20v-8 M9 20V4 M15 20v-6 M21 20V8','M3 4h18l-7 9v7l-4-2v-5z','M16 21v-3a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v3 M9 3a4 4 0 1 0 0 8a4 4 0 1 0 0-8 M19 8v6 M16 11h6','M4 3v18h18 M8 16l4-6 4 3 5-8','M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8 M12 2v3 M12 19v3 M2 12h3 M19 12h3 M5 5l2 2 M17 17l2 2 M5 19l2-2 M17 7l2-2'];
 const menu=['Visão Geral','Cronograma','Demandas','Capacidade','Pipeline','Pessoas','Relatórios','Configurações'];
 $('#nav').innerHTML=menu.map((p,i)=>`<button data-page="${p}" title="${p}"><svg viewBox="0 0 24 24"><path d="${paths[i]}"/></svg><span>${p}</span></button>`).join('');
@@ -91,6 +92,8 @@ async function importFile(file){if(!file)return;try{if(file.size>20*1024*1024)th
  });
  document.addEventListener('change',ev=>{const el=ev.target;if(el.dataset.filter){const key=el.dataset.filter,old=state.filters[key];state.filters[key]=el.value;if(state.filters.from&&state.filters.to&&state.filters.from>state.filters.to){state.filters[key]=old;el.value=old;toast('A data final deve ser igual ou posterior à inicial.');return}if(key==='from'&&el.value)state.anchor=el.value.slice(0,7)+'-01';render()}if(el.id==='scale'){state.scale=el.value;render()}if(el.id==='delivery-days'){state.deliveryDays=Number(el.value);render()}if(el.id==='file'){importFile(el.files[0]);el.value=''}});
  document.addEventListener('input',ev=>{if(ev.target.id==='search'){const value=ev.target.value,pos=ev.target.selectionStart;state.filters.search=value;render();$('#search').focus();$('#search').setSelectionRange(pos,pos)}});
+ $('#theme-toggle').onclick=()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';localStorage.setItem('sgp-theme',dark?'dark':'light');$('#theme-toggle').innerHTML=dark?'☀ <span>Claro</span>':'☾ <span>Escuro</span>';$('#theme-toggle').setAttribute('aria-label',dark?'Ativar modo claro':'Ativar modo escuro')};
+ $('#theme-toggle').innerHTML=savedTheme==='dark'?'☀ <span>Claro</span>':'☾ <span>Escuro</span>';
  $('#collapse').onclick=()=>{document.body.classList.toggle('collapsed');$('#collapse').setAttribute('aria-expanded',String(!document.body.classList.contains('collapsed')))};
  if(!loadError&&!localStorage.getItem(SGP.storage.key)){try{SGP.storage.save(data)}catch{loadError='Armazenamento local indisponível. Exporte os dados antes de fechar.'}}
  render();

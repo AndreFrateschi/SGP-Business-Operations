@@ -1,0 +1,3 @@
+.DS_Store
+*.log
+tests/volume-500.json

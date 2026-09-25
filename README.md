@@ -4,6 +4,8 @@ Visão integrada das demandas, capacidade e entregas da operação SGP. Aplicaç
 
 ## Executar
 
+Ao abrir a aplicação, a tela de entrada demonstrativa solicita usuário e senha `SGP`. Essa camada usa apenas `sessionStorage` no navegador: serve para a apresentação inicial e não substitui autenticação real, servidor ou controle de acesso. Ao fechar a sessão do navegador, o acesso é solicitado novamente.
+
 Abra `index.html` em um navegador moderno, mantendo as pastas ao lado do arquivo. A biblioteca de Excel está incluída: a aplicação não requer internet, npm, API, backend ou servidor de aplicação.
 
 Para uma origem local estável e comportamento consistente de localStorage, recomenda-se servir arquivos estáticos:
@@ -85,7 +87,7 @@ Dados corrompidos não são automaticamente substituídos. Configurações ofere
 ## Arquitetura e arquivos
 
 - `index.html`: shell semântico e carregamento ordenado de scripts clássicos, compatível com abertura local.
-- `css/styles.css`: identidade neutra, sidebar, cockpit, responsividade, impressão e foco.
+- `css/styles.css`: identidade com acentos magenta T-Systems, sidebar grafite, cockpit, responsividade, impressão e foco.
 - `js/utils.js`: esquema, enumerações, datas UTC e escape HTML.
 - `js/data.js`: dados fictícios, base vazia e adaptador localStorage.
 - `js/validation.js`: regras compartilhadas de cadastro/importação.
@@ -103,7 +105,7 @@ O namespace SGP evita dependências de bundler e de servidor de módulos. Camada
 
 `AndreFrateschi/Cronograma_V1`, `index.html`, foi consultado apenas para análise. Conceitos retidos: períodos, cabeçalhos/nomes fixos, tema por tokens, persistência e importação/exportação. Nenhum arquivo desse repositório foi alterado. A nova modelagem relaciona Demandas → Fases/Marcos/Alocações e Pessoas → Alocações.
 
-Não são incluídos logo oficial, sprint, histórias, tarefas, bugs, apontamento de horas, workflow de aprovação ou controle financeiro. A sidebar reserva identidade neutra. Isso mantém o foco em visibilidade, previsibilidade, capacidade, dependências, riscos e entregas.
+Não são incluídos logo oficial, sprint, histórias, tarefas, bugs, apontamento de horas, workflow de aprovação ou controle financeiro. A sidebar combina o símbolo T e quadrados do arquivo oficial da T-Systems com a assinatura SGP / Business Operations, conforme solicitado. A origem está documentada em assets/README.md. O magenta (#E20074) aparece também nas ações e seleções. Isso mantém o foco em visibilidade, previsibilidade, capacidade, dependências, riscos e entregas.
 
 ## Publicar posteriormente no GitHub Pages
 

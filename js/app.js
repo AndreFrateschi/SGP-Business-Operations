@@ -69,6 +69,8 @@ async function importFile(file){if(!file)return;try{if(file.size>20*1024*1024)th
  document.addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b)return;const a=b.dataset;
   if(a.page){state.page=a.page;render()}
+  if(a.action==='kpi-details'){const i=Number(a.kpi),tips=SGP.kpiTips||[],lines=String(tips[i]||'Nenhum item encontrado.').split('\n').filter(Boolean);modal(['Demandas ativas','Em andamento','Aguardando cliente','Demandas em risco','Próximas entregas','Pessoas na operação'][i]||'Detalhes',`<div class="modal-body kpi-list"><ul>${lines.map(x=>`<li>${e(x)}</li>`).join('')||'<li>Nenhum item encontrado.</li>'}</ul></div>`,`<button data-action="close">Fechar</button>`)}
+  
   if(a.kpiTip!==undefined){const i=Number(a.kpiTip),tips=SGP.kpiTips||[],lines=String(tips[i]||'Nenhum item').split('\n').filter(Boolean);modal(['Demandas ativas','Em andamento','Aguardando cliente','Demandas em risco','Próximas entregas','Pessoas na operação'][i]||'Detalhes',`<div class="modal-body kpi-list"><ul>${lines.map(x=>`<li>${e(x)}</li>`).join('')||'<li>Nenhum item encontrado.</li>'}</ul></div>`,`<button data-action="close">Fechar</button>`)}
   if(a.detail)detail(a.detail);
   if(a.new)edit(a.new,-1,a.demand||'');

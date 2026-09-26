@@ -37,6 +37,12 @@ SGP.validate=data=>{
  if(Object.keys(SGP.schemas).some(k=>!Array.isArray(data[k])))return {errors,warnings};
  const demandIds=new Set((data.demandas||[]).filter(Boolean).map(d=>String(d.id))),personIds=new Set((data.pessoas||[]).filter(Boolean).map(p=>String(p.id)));
  ['alocacoes','fases','marcos'].forEach(key=>(data[key]||[]).forEach((r,i)=>{if(!r||typeof r!=='object')return;if(!demandIds.has(String(r.demand)))add(key,i,`Demanda inexistente: ${r.demand}`);if(key==='alocacoes'&&!personIds.has(String(r.person)))add(key,i,`Pessoa inexistente: ${r.person}`);if(key==='alocacoes'&&data.pessoas?.find(p=>p.id===r.person)?.active==='Não')warnings.push(`Alocacoes, linha ${i+2}: pessoa inativa.`)}));
- if(!errors.length){const by=new Map(data.demandas.map(d=>[d.id,d]));['fases','marcos'].forEach(key=>data[key].forEach((r,i)=>{const d=by.get(r.demand);if((r.date||r.start)<d.start||(r.date||r.end)>d.end)warnings.push(`${SGP.sheetNames[key]}, linha ${i+2}: período fora das datas da demanda.`)}))}
+ if(!errors.length){const by=new Map(data.demandas.map(d=>[d.id,d]));['fases','marcos'].forEach(key=>data[key].forEach((r,i)=>{const d=by.get(r.demand);if((r.date||r.start)<d.start||(r.date||r.end)>d.end)warnings.push(`${SGP.sheetNames[key]}, linha ${i+2}: ${r.name||r.phase||r.id} (${d.code||d.id}): período fora das datas da demanda (${SGP.fmt(d.start)} a ${SGP.fmt(d.end)}).`)}))}
+ if(!errors.length){
+  const groups=new Map();data.fases.forEach((r,i)=>{if(!groups.has(r.demand))groups.set(r.demand,[]);groups.get(r.demand).push({r,i})});
+  for(const [id,rows] of groups){const demand=data.demandas.find(d=>d.id===id);for(let a=0;a<rows.length;a++)for(let b=a+1;b<rows.length;b++){
+   const x=rows[a],y=rows[b];if(x.r.start<=y.r.end&&y.r.start<=x.r.end)warnings.push(`Fases, linha ${x.i+2} e ${y.i+2}: sobreposição em ${demand.code||id} entre ${x.r.phase} (${SGP.fmt(x.r.start)} a ${SGP.fmt(x.r.end)}) e ${y.r.phase} (${SGP.fmt(y.r.start)} a ${SGP.fmt(y.r.end)}).`);
+  }}
+ }
  return {errors,warnings};
 };

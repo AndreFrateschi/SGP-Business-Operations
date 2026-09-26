@@ -46,3 +46,27 @@
 .kpi[title]{cursor:help}.kpi[title]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .kpi[data-kpi-tip]{cursor:pointer}.kpi[data-kpi-tip]:hover{box-shadow:0 0 0 2px var(--accent)}.kpi-list ul{margin:0;padding-left:20px;display:grid;gap:7px}.kpi-list li{line-height:1.4}
 .kpi{position:relative}.kpi summary{list-style:none;display:flex;gap:12px;align-items:flex-start;cursor:pointer}.kpi summary::-webkit-details-marker{display:none}.kpi-popover{position:absolute;z-index:20;top:calc(100% + 8px);left:0;min-width:280px;max-width:360px;max-height:260px;overflow:auto;padding:12px 14px;border:1px solid var(--accent);border-radius:8px;background:var(--white);color:var(--ink);box-shadow:0 10px 28px #0003;font-size:12px}.kpi-popover strong{display:block;margin-bottom:8px}.kpi-popover ul{margin:0;padding-left:18px;display:grid;gap:5px}.kpi-popover li{line-height:1.35}:root[data-theme="dark"] .kpi-popover{background:#26333e;border-color:#e20074;color:#f1f5f8}
+
+/* Modal surfaces follow the active theme, including sticky actions and tables. */
+.modal-actions{background:var(--white)}
+.issue-error{color:#ba314c}.issue-warning{color:#91600d}
+:root[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="dark"] dialog .counts>span{background:#263744}
+:root[data-theme="dark"] dialog .detail-grid small{color:var(--muted)}
+:root[data-theme="dark"] dialog input[readonly]{background:#263744;color:#b8c7d2}
+:root[data-theme="dark"] tr:hover td{background:#293b49}
+:root[data-theme="dark"] .issue-error{color:#ff9fbb}
+:root[data-theme="dark"] .issue-warning{color:#ffd080}
+:root[data-theme="dark"] dialog .primary{background:var(--accent);color:#fff}
+#record-warnings li{margin:8px 0;overflow-wrap:anywhere}
+/* Preserve the pipeline palette instead of the generic dark button background. */
+:root[data-theme="dark"] .pipe{background:#edf3f9;color:#172a3c}
+:root[data-theme="dark"] .pipe:nth-child(2n){background:#e6f1fb}
+:root[data-theme="dark"] .pipe:last-child{background:#e3f6ec}
+:root[data-theme="dark"] .pipe small{color:#465e72}
+:root[data-theme="dark"] .pipe:hover{filter:brightness(.92)}
+:root[data-theme="dark"] .phase-bar{opacity:1}
+/* Keep each front's identifying stripe when dark timeline borders are applied. */
+:root[data-theme="dark"] .group-row .tlabel{border-left:3px solid var(--front)}
+
+.execution-alerts{border-color:#cf982f}.execution-list{display:grid;gap:12px;padding:16px}.execution-item{border-left:4px solid #cf982f;padding:4px 12px;min-width:0}.execution-item.high{border-color:#e55169}.execution-item .link{display:block;background:none;border:0;padding:0;color:var(--accent-ink);text-align:left;white-space:normal;overflow-wrap:anywhere}.execution-item strong{display:block;margin-top:8px;font-size:13px}.execution-item p,.execution-help p{line-height:1.6;font-size:13px;color:var(--muted);margin:7px 0}.execution-help{padding:0 16px 16px}.execution-help summary{cursor:pointer;color:var(--accent-ink)}:root[data-theme="dark"] .execution-alerts{border-color:#cf982f}

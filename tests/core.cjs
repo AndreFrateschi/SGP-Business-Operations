@@ -45,4 +45,15 @@ test('fase vencida: ontem, hoje, encerramento e filtro de demanda',()=>{
  d.fases[0].end=SGP.add(SGP.today(),-1);d.fases[0].status='Concluído';assert.equal(SGP.executionRisks(d,[demand]).length,0);
  assert.equal(SGP.executionPanel([]),'');
 });
+test('alocação: limites inclusivos, pessoa inativa e percentual informativo',()=>{
+ const d=SGP.empty();d.demandas=[{id:'D'}];d.pessoas=[{id:'P',name:'Ativa',front:'Produção',capacity:160,active:'Sim'},{id:'I',name:'Inativa',front:'Produção',capacity:160,active:'Não'}];
+ d.alocacoes=[{person:'P',demand:'D',start:'2026-02-01',end:'2026-02-28',hours:160,percent:10},{person:'I',demand:'D',start:'2026-02-01',end:'2026-02-28',hours:160,percent:100}];
+ const [row]=SGP.capacity(d,'2026-02-01','2026-02-28');assert(Math.abs(row.hours-160)<.001);assert(Math.abs(row.available-160)<.001);assert(Math.abs(row.util-100)<.001);assert(!row.conflict);
+ d.alocacoes[0].percent=90;assert.equal(SGP.capacity(d,'2026-02-01','2026-02-28')[0].hours,160);
+});
+test('alocação: período parcial e virada de mês conservam horas e capacidade',()=>{
+ const d=SGP.empty();d.demandas=[{id:'D'}];d.pessoas=[{id:'P',name:'A',front:'Produção',capacity:160,active:'Sim'}];d.alocacoes=[{person:'P',demand:'D',start:'2026-01-31',end:'2026-02-01',hours:20}];
+ const [row]=SGP.capacity(d,'2026-01-31','2026-02-01');assert.equal(row.hours,20);assert(Math.abs(row.available-(160/31+160/28))<.001);assert(row.conflict);
+ const [oneDay]=SGP.capacity(d,'2026-02-01','2026-02-01');assert.equal(oneDay.hours,10);assert(Math.abs(oneDay.available-160/28)<.001);
+});
 console.log(`${count} testes passaram.`);

@@ -11,12 +11,14 @@ const menu=['Visão Geral','Cronograma','Demandas','Capacidade','Pipeline','Pess
 $('#nav').innerHTML=menu.map((p,i)=>`<button data-page="${p}" title="${p}"><svg viewBox="0 0 24 24"><path d="${paths[i]}"/></svg><span>${p}</span></button>`).join('');
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('#toast').classList.remove('show'),4200)}
 function persistView(){try{localStorage.setItem('sgp-view',JSON.stringify(state))}catch{toast('Não foi possível salvar as preferências neste navegador.')}}
+function clearFilters(){state.filters={...defaults.filters};state.anchor=defaults.anchor;persistView();render();toast('Filtros removidos. Exibindo todas as frentes e períodos.')}
 function commit(next){try{SGP.storage.save(next);data=next;loadError='';render();return true}catch(err){toast('Não foi possível salvar. Exporte um backup ou libere espaço no navegador.');return false}}
 function period(){const today=SGP.today(),start=state.filters.from||(state.filters.to||today).slice(0,7)+'-01',d=SGP.date(start),end=state.filters.to||SGP.iso(new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0)));return {start,end}}
 function filtered(){const f=state.filters;return data.demandas.filter(d=>Object.entries(f).every(([k,v])=>!v||k==='search'?(k!=='search'||!v||`${d.code} ${d.name} ${d.description}`.toLocaleLowerCase('pt-BR').includes(v.toLocaleLowerCase('pt-BR'))):k==='from'?d.end>=v:k==='to'?d.start<=v:d[k]===v))}
 function options(values,current,empty='Todos'){return `<option value="">${empty}</option>`+values.map(v=>`<option value="${e(v)}" ${v===current?'selected':''}>${e(v)}</option>`).join('')}
 function renderFilters(){const f=state.filters,fields=[['front','Frente',SGP.fronts],['leader','Tech Leader',[...new Set(data.demandas.map(d=>d.leader).filter(Boolean))]],['pmo','PMO',[...new Set(data.demandas.map(d=>d.pmo).filter(Boolean))]],['plan','Plan',[...new Set(data.demandas.map(d=>d.plan).filter(Boolean))]],['status','Status',SGP.statuses],['phase','Fase',SGP.stages],['risk','Risco',['Nenhum','Baixa','Média','Alta','Crítica']]];
  $('#filters').innerHTML=fields.map(([key,label,values])=>`<label>${label}<select data-filter="${key}" class="${f[key]?'filter-active':''}">${options(values,f[key])}</select></label>`).join('')+`<label>De <input aria-label="Período inicial" type="date" data-filter="from" value="${e(f.from)}"></label><label>Até <input aria-label="Período final" type="date" data-filter="to" value="${e(f.to)}"></label><button data-action="clear-filters">Limpar filtros</button><span id="filter-count">${Object.values(f).filter(Boolean).length?Object.values(f).filter(Boolean).length+' filtro(s) ativo(s)':'Todas as frentes'}</span>`;
+ const clear=$('[data-action="clear-filters"]');if(clear)clear.onclick=event=>{event.stopPropagation();clearFilters()};
  $('#filters').hidden=state.page==='Configurações';
 }
 const title=(t,sub='',actions='')=>`<div class="section-title"><div><h2>${t}</h2>${sub?`<p>${sub}</p>`:''}</div><div class="actions">${actions}</div></div>`;
@@ -94,7 +96,7 @@ async function importFile(file){if(!file)return;try{if(file.size>20*1024*1024)th
   if(a.capMode){state.capMode=a.capMode;render()}
   if(a.personMode){state.personMode=a.personMode;render()}
   if(a.action==='close')$('#dialog').close();
-  if(a.action==='clear-filters'){state.filters={...defaults.filters};render()}
+  if(a.action==='clear-filters')clearFilters()
   if(a.action==='model'){try{SGP.exportExcel(SGP.demo(),'Modelo-SGP.xlsx');toast('Modelo Excel gerado.')}catch{toast('Não foi possível gerar o modelo Excel.')}}
   if(a.action==='export'){try{SGP.exportExcel(data);toast('Base exportada para Excel.')}catch{toast('Não foi possível exportar o Excel.')}}
   if(['import','import-json'].includes(a.action)){$('#file').accept=a.action==='import-json'?'.json':'.xlsx';$('#file').click()}

@@ -26,6 +26,7 @@ SGP.executionPanel=risks=>{
 };
 SGP.risks=(data,ds,caps)=>{
  const risks=SGP.executionRisks(data,ds);ds.filter(d=>!['Concluído','Cancelado'].includes(d.status)).forEach(d=>{if(d.risk&&d.risk!=='Nenhum'||['Em risco','Bloqueado','Aguardando cliente','Aguardando aprovação'].includes(d.status)||d.end<SGP.today())risks.push({d,type:d.end<SGP.today()?'Prazo vencido':d.dependency?'Dependência':d.status,severity:d.risk&&d.risk!=='Nenhum'?d.risk:'Média',description:d.riskDescription||d.dependency||'Revisar prazo e situação da demanda.'})});
+ caps.forEach(p=>p.allocations.filter(a=>Number(a.hours)>0&&!SGP.workdays(a.start,a.end)).forEach(a=>{const d=ds.find(d=>d.id===a.demand);if(d)risks.push({d,type:'Alocação sem dia útil',severity:'Alta',description:p.name+': o intervalo contém apenas fim de semana. Corrija as datas; essas horas não entram na ocupação calculada.'})}));
  caps.filter(p=>p.conflict).forEach(p=>{const unique=new Set();p.allocations.forEach(a=>{if(unique.has(a.demand))return;unique.add(a.demand);const d=ds.find(d=>d.id===a.demand);if(d)risks.push({d,type:'Sobrealocação',severity:'Alta',description:p.name+': horas diárias acima da capacidade em parte do período.'})})});return risks;
 };
 SGP.pipeline=ds=>{const stages=SGP.stages;return `<div class="pipeline">${stages.map(p=>{const n=ds.filter(d=>d.phase===p).length;return `<button class="pipe" data-pipeline="${p}"><span>${p}</span><strong>${n}</strong><small>${ds.length?Math.round(n/ds.length*100):0}%</small></button>`}).join('')}</div>`};

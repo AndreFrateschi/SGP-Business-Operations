@@ -44,13 +44,13 @@ A timeline tem janela própria navegável (8 semanas, 4 meses ou 4 trimestres de
 
 ### Capacidade
 
-Capacidade disponível = soma da capacidade mensal dividida pelos dias corridos de cada mês dentro do período.
+Capacidade disponível = dias de segunda a sexta no período × 8 horas.
 
 Horas alocadas no recorte = horas totais da alocação × dias de interseção / dias totais da alocação, incluindo início e fim.
 
 Utilização = horas alocadas / capacidade disponível. A análise diária identifica sobrealocação mesmo quando a média mensal não supera 100%. Alocações simultâneas abaixo da capacidade são permitidas. Capacidade zero com horas alocadas aparece como “Sem capacidade”, com alerta.
 
-As horas são distribuídas uniformemente por dias corridos. Feriados, férias, jornadas diferentes por dia e horas efetivamente apontadas não são modelados na V1. Percentual de alocação é informação complementar; **Horas** é a fonte do cálculo. Frente é agregada pela frente principal da pessoa, não pela frente da demanda. Filtros reduzem as horas às demandas selecionadas; no filtro Frente, pessoas de outras frentes principais não entram no agregado. Para avaliar conflitos da operação inteira, limpe os filtros.
+As horas são distribuídas uniformemente pelos dias de segunda a sexta. Sábados e domingos têm capacidade zero. A capacidade mensal legada é preservada no Excel por compatibilidade e não participa dos cálculos. Feriados, férias, jornadas diferentes por dia e horas efetivamente apontadas não são modelados na V1. Percentual de alocação é calculado automaticamente por horas ÷ (dias de segunda a sexta × 8) × 100; **Horas** é a fonte do cálculo. Frente é agregada pela frente principal da pessoa, não pela frente da demanda. Filtros reduzem as horas às demandas selecionadas; no filtro Frente, pessoas de outras frentes principais não entram no agregado. Para avaliar conflitos da operação inteira, limpe os filtros.
 
 ## Excel: principal interface de dados
 

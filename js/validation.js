@@ -1,4 +1,4 @@
-SGP.validate=data=>{
+SGP.validate=(data,{allowLegacyWeekends=false}={})=>{
  const errors=[],warnings=[];if(!data||typeof data!=='object')return {errors:['Arquivo sem estrutura de dados.'],warnings};
  const add=(k,i,m)=>errors.push(`${SGP.sheetNames[k]}, linha ${i+2}: ${m}`),limits={demandas:500,pessoas:200,alocacoes:2000,fases:5000,marcos:5000};
  for(const [key,schema] of Object.entries(SGP.schemas)){
@@ -28,6 +28,7 @@ SGP.validate=data=>{
     const dates=[r.start,r.technical,r.homologation,r.deployment,r.end].filter(Boolean);if(dates.some((d,j)=>j&&d<dates[j-1]))warnings.push(`Demandas, linha ${i+2}: sequência de entrega técnica, homologação e final fora de ordem.`);
     if(r.next&&!r.nextDate||r.nextDate&&!r.next)warnings.push(`Demandas, linha ${i+2}: próximo marco incompleto.`);
    }
+   if(key==='alocacoes'&&Number(r.hours)>0&&SGP.validDate(r.start)&&SGP.validDate(r.end)&&r.end>=r.start&&!SGP.workdays(r.start,r.end))(allowLegacyWeekends?warnings.push(`Alocacoes, linha ${i+2}: intervalo sem dias de trabalho; corrija as datas.`):add(key,i,'Alocação com horas precisa incluir pelo menos um dia de segunda a sexta.'));
    if(key==='pessoas'){
     if(!['Sim','Não'].includes(r.active))add(key,i,'Ativo deve ser Sim ou Não.');
     if(!['Tech Leader','Analista','Desenvolvedor','PMO','Plan','Business Operations','Outro'].includes(r.role))add(key,i,'Função desconhecida.');

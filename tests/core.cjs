@@ -7,7 +7,7 @@ test('demo: referências e datas válidas',()=>assert.deepEqual(SGP.validate(dem
 test('data impossível, referência e ID duplicado',()=>{const d=structuredClone(demo);d.demandas[0].start='2026-02-30';d.pessoas.push(d.pessoas[0]);d.alocacoes[0].person='inexistente';const v=SGP.validate(d);assert(v.errors.some(x=>x.includes('data inválida')));assert(v.errors.some(x=>x.includes('ID duplicado')));assert(v.errors.some(x=>x.includes('Pessoa inexistente')))});
 test('ordem invertida e números inválidos',()=>{const d=structuredClone(demo);d.alocacoes[0].end='2000-01-01';d.demandas[0].progress=101;d.pessoas[0].capacity=-1;assert(SGP.validate(d).errors.length>=3)});
 test('referências em fases e marcos',()=>{const d=structuredClone(demo);d.fases[0].demand='x';d.marcos[0].demand='x';assert.equal(SGP.validate(d).errors.length,2)});
-test('Excel real: gravação e leitura preservam todas as entidades',()=>{const buffer=XLSX.write(SGP.workbook(demo),{type:'buffer',bookType:'xlsx'});assert.equal(Buffer.from(buffer.slice(0,2)).toString(),'PK');const parsed=SGP.parseWorkbook(XLSX.read(buffer,{type:'buffer'}));assert.deepEqual(parsed.errors,[]);for(const key of Object.keys(SGP.schemas))for(let i=0;i<demo[key].length;i++)for(const [f] of SGP.schemas[key])assert.equal(parsed.data[key][i][f]??'',demo[key][i][f]??'');fs.writeFileSync(path.join(root,'Modelo-SGP.xlsx'),buffer)});
+test('Excel real: gravação e leitura preservam entidades e percentual calculado',()=>{const buffer=XLSX.write(SGP.workbook(demo),{type:'buffer',bookType:'xlsx'});assert.equal(Buffer.from(buffer.slice(0,2)).toString(),'PK');const parsed=SGP.parseWorkbook(XLSX.read(buffer,{type:'buffer'}));assert.deepEqual(parsed.errors,[]);for(const key of Object.keys(SGP.schemas))for(let i=0;i<demo[key].length;i++)for(const [f] of SGP.schemas[key]){const expected=key==='alocacoes'&&f==='percent'?Math.round(SGP.allocationPercent(demo,demo[key][i])*10)/10:demo[key][i][f]??'';assert.equal(parsed.data[key][i][f]??'',expected)}fs.writeFileSync(path.join(root,'Modelo-SGP.xlsx'),buffer)});
 test('Excel sem aba ou coluna não é aceito',()=>{const wb=SGP.workbook(demo);delete wb.Sheets.Pessoas;delete wb.Sheets.Demandas.A1;assert(SGP.parseWorkbook(wb).errors.length>=2)});
 test('Excel célula de data serial',()=>{const wb=SGP.workbook(demo);wb.Sheets.Demandas.N2={t:'n',v:46200};const parsed=SGP.parseWorkbook(wb);assert(SGP.validDate(parsed.data.demandas[0].start))});
 test('Excel com aba vazia mantém cabeçalhos',()=>assert.deepEqual(SGP.parseWorkbook(SGP.workbook(SGP.empty())).errors,[]));
@@ -45,11 +45,11 @@ test('fase vencida: ontem, hoje, encerramento e filtro de demanda',()=>{
  d.fases[0].end=SGP.add(SGP.today(),-1);d.fases[0].status='Concluído';assert.equal(SGP.executionRisks(d,[demand]).length,0);
  assert.equal(SGP.executionPanel([]),'');
 });
-test('alocação: limites inclusivos, pessoa inativa e percentual informativo',()=>{
+test('alocação: limites inclusivos, pessoa inativa e percentual automático',()=>{
  const d=SGP.empty();d.demandas=[{id:'D'}];d.pessoas=[{id:'P',name:'Ativa',front:'Produção',capacity:160,active:'Sim'},{id:'I',name:'Inativa',front:'Produção',capacity:160,active:'Não'}];
  d.alocacoes=[{person:'P',demand:'D',start:'2026-02-01',end:'2026-02-28',hours:160,percent:10},{person:'I',demand:'D',start:'2026-02-01',end:'2026-02-28',hours:160,percent:100}];
  const [row]=SGP.capacity(d,'2026-02-01','2026-02-28');assert(Math.abs(row.hours-160)<.001);assert(Math.abs(row.available-160)<.001);assert(Math.abs(row.util-100)<.001);assert(!row.conflict);
- d.alocacoes[0].percent=90;assert.equal(SGP.capacity(d,'2026-02-01','2026-02-28')[0].hours,160);
+ assert.equal(Math.round(SGP.allocationPercent(d,d.alocacoes[0])*10)/10,100);d.alocacoes[0].hours=40;assert.equal(Math.round(SGP.allocationPercent(d,d.alocacoes[0])*10)/10,25);assert.equal(SGP.capacity(d,'2026-02-01','2026-02-28')[0].hours,40);
 });
 test('alocação: período parcial e virada de mês conservam horas e capacidade',()=>{
  const d=SGP.empty();d.demandas=[{id:'D'}];d.pessoas=[{id:'P',name:'A',front:'Produção',capacity:160,active:'Sim'}];d.alocacoes=[{person:'P',demand:'D',start:'2026-01-31',end:'2026-02-01',hours:20}];

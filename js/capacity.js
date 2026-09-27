@@ -12,4 +12,10 @@ SGP.capacity=(data,start,end,demands=data.demandas)=>{
   return {...p,available,hours,util:available?hours/available*100:hours?Infinity:0,conflict,overlap,allocations};
  });
 };
+SGP.allocationPercent=(data,allocation)=>{
+ const person=data.pessoas.find(p=>p.id===allocation.person),hours=Number(allocation.hours);
+ if(!person||!SGP.validDate(allocation.start)||!SGP.validDate(allocation.end)||allocation.end<allocation.start||!Number.isFinite(hours)||hours<0)return null;
+ let available=0;for(let day=allocation.start;day<=allocation.end;day=SGP.add(day,1)){const date=SGP.date(day),daysInMonth=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth()+1,0)).getUTCDate();available+=Number(person.capacity)/daysInMonth}
+ return available>0?hours/available*100:null;
+};
 SGP.frontCapacity=rows=>SGP.fronts.map(front=>{const group=rows.filter(p=>p.front===front),available=group.reduce((s,p)=>s+p.available,0),hours=group.reduce((s,p)=>s+p.hours,0);return {front,people:group.length,available,hours,util:available?hours/available*100:hours?Infinity:0}});

@@ -84,3 +84,11 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 .pipeline .pipe span{font-size:10px;line-height:1.3;min-height:25px;overflow-wrap:anywhere}
 .pipeline .pipe strong{font-size:23px;margin:9px 0}
 .pipeline .pipe small{font-size:10px}
+/* Project evolution is visible immediately in the demand detail. */
+.project-progress{display:flex;align-items:center;gap:20px;margin:18px 0;padding:14px 16px;border:1px solid var(--line);border-radius:8px;background:var(--accent-soft)}
+.project-progress small{display:block;color:var(--muted);margin-bottom:3px}
+.project-progress strong{font-size:20px;color:var(--accent-ink)}
+.progress-track{height:10px;flex:1;min-width:100px;overflow:hidden;border-radius:8px;background:#dfe7ed}
+.progress-track i{display:block;height:100%;border-radius:inherit;background:var(--accent)}
+:root[data-theme="dark"] .project-progress{background:#253643;border-color:#405260}
+:root[data-theme="dark"] .progress-track{background:#344b5a}

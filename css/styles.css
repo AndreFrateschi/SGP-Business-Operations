@@ -92,3 +92,8 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 .progress-track i{display:block;height:100%;border-radius:inherit;background:var(--accent)}
 :root[data-theme="dark"] .project-progress{background:#253643;border-color:#405260}
 :root[data-theme="dark"] .progress-track{background:#344b5a}
+/* Informative delivery interval, intentionally calmer than an alert. */
+.delivery-window{margin:15px 0;padding:14px;border-left:3px solid #9aabba;border-radius:0 6px 6px 0;background:#f4f7fa;color:#53687a;line-height:1.7;font-size:13px}
+.delivery-window strong{color:#31495e}
+:root[data-theme="dark"] .delivery-window{background:#22313d;border-color:#70889a;color:#c3d0d9}
+:root[data-theme="dark"] .delivery-window strong{color:#edf2f7}

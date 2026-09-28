@@ -92,7 +92,17 @@ test('demonstração: fases classificadas, orçamento fechado e datas sincroniza
  for(const d of demo.demandas){const phases=demo.fases.filter(p=>p.demand===d.id),budget=SGP.phaseBudget(demo,d.id);
  assert.equal(d.scheduleAuto,'Sim');assert.equal(budget.unclassified,0);assert.equal(budget.planned,d.estimated);assert.equal(budget.remaining,0);
  assert(phases.some(p=>p.budget==='Não'&&p.plannedHours===0));assert(phases.some(p=>p.budget==='Sim'&&p.plannedHours>0));
- assert.equal(d.start,phases.map(p=>p.start).sort()[0]);assert.equal(d.end,phases.map(p=>p.end).sort().at(-1));assert.equal(d.nextDate,d.technical);
+ assert.equal(d.start,phases.map(p=>p.start).sort()[0]);assert.equal(d.end,phases.map(p=>p.end).sort().at(-1));assert.equal(d.nextDate,'');assert(SGP.nextMilestone(demo,d.id));
  }
+});
+test('marcos legados: migração idempotente, sem duplicação ou ressurreição',()=>{
+ const d=SGP.empty();d.demandas=[{id:'D',next:'Aceite',nextDate:'2026-10-10'}];
+ SGP.migrateMilestones(d);assert.equal(d.marcos.length,1);assert.equal(d.demandas[0].next,'');
+ SGP.migrateMilestones(d);assert.equal(d.marcos.length,1);assert.equal(SGP.nextMilestone(d,'D').name,'Aceite');
+ d.marcos[0].status='Concluído';assert.equal(SGP.nextMilestone(d,'D'),undefined);
+ d.demandas[0].next='Aceite';d.demandas[0].nextDate='2026-10-10';SGP.migrateMilestones(d);assert.equal(d.marcos.length,1);
+ d.marcos=[];SGP.migrateMilestones(d);assert.equal(d.marcos.length,0);
+ const legacy=structuredClone(demo);legacy.demandas[0].next='Aceite extra';legacy.demandas[0].nextDate=legacy.demandas[0].end;
+ const result=SGP.parseWorkbook(SGP.workbook(legacy));assert.deepEqual(result.errors,[]);assert(result.data.marcos.some(m=>m.name==='Aceite extra'));assert.equal(result.data.demandas[0].next,'');
 });
 console.log(`${count} testes passaram.`);

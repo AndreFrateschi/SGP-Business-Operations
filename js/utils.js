@@ -40,3 +40,14 @@ SGP.syncPhaseSchedule=data=>{
   d.phase=(ordered.find(p=>p.status==='Em andamento')||ordered.find(p=>!['Concluído','Cancelado'].includes(p.status))||ordered.at(-1))?.phase||'Entrada';
  });return data;
 };
+
+// Move legacy milestone pairs once; never regenerate a deleted milestone.
+SGP.migrateMilestones=data=>{
+ if(!Array.isArray(data?.demandas)||!Array.isArray(data?.marcos))return data;
+ data.demandas.forEach(d=>{
+  if(!d.next||!SGP.validDate(d.nextDate))return;
+  if(!data.marcos.some(m=>m.demand===d.id&&m.name===d.next&&m.date===d.nextDate))data.marcos.push({demand:d.id,name:d.next,date:d.nextDate,status:'Não iniciado',notes:'Migrado do cadastro da demanda.'});
+  d.next='';d.nextDate='';
+ });return data;
+};
+SGP.nextMilestone=(data,id)=>data.marcos.filter(m=>m.demand===id&&!['Concluído','Cancelado'].includes(m.status)).sort((a,b)=>a.date.localeCompare(b.date))[0];

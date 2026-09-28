@@ -169,4 +169,15 @@ test('percentual acima de 100 e risco detalhado permanecem visíveis',()=>{
  SGP.dashboard(d,d.demandas,state,start,end);
  assert(SGP.kpiTips[3].includes(' — '));assert(SGP.kpiTips[3].includes('('));
 });
+test('marcos só aparecem após cadastro explícito',()=>{
+ const d=SGP.empty(),today=SGP.today();d.demandas=[{id:'D',code:'D',name:'Teste',front:'Produção',phase:'Desenvolvimento',status:'Em andamento',start:today,end:SGP.add(today,10),technical:SGP.add(today,5)}];
+ const state={anchor:today.slice(0,7)+'-01',scale:'Mês',group:'front',closed:[]};
+ assert.equal(SGP.deliveries(d,d.demandas,30).length,0);
+ assert(!SGP.timeline(d,d.demandas,state).includes('class="milestone '));
+ d.marcos=[{demand:'D',name:'Entrega técnica',date:SGP.add(today,5),status:'Não iniciado'}];
+ assert.deepEqual(SGP.deliveries(d,d.demandas,30).map(m=>m.name),['Entrega técnica']);
+ assert(SGP.timeline(d,d.demandas,state).includes('class="milestone tech"'));
+ d.marcos[0].status='Concluído';assert.equal(SGP.deliveries(d,d.demandas,30).length,0);
+ d.marcos=[];assert(!SGP.timeline(d,d.demandas,state).includes('class="milestone '));
+});
 console.log(`${count} testes passaram.`);

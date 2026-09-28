@@ -10,6 +10,8 @@ SGP.executionRisks=(data,ds)=>{
  for(const d of active){
   const estimated=Number(d.estimated),consumed=Number(d.consumed),progress=Number(d.progress),hasProgress=d.progress!==''&&d.progress!=null&&Number.isFinite(progress)&&progress>=0&&progress<=100;
   const add=(type,severity,description)=>result.push({d,type,severity,description,execution:true});
+  const budget=SGP.phaseBudget(data,d.id);if(budget.remaining<0)add('Planejamento excedido','Alta',`${budget.planned}h distribuídas nas fases para ${Number(d.estimated)||0}h estimadas.`);
+  if(d.deadline&&d.end&&d.end>d.deadline)add('Prazo acordado excedido','Alta','O término planejado pelas fases ultrapassa a entrega acordada com o cliente.');
   if(estimated>0&&Number.isFinite(estimated)&&Number.isFinite(consumed)&&consumed>=0){
    const used=consumed/estimated*100,gap=used-progress;
    if(consumed>estimated)add('Horas excedidas','Alta',`${consumed}h consumidas de ${estimated}h estimadas: ${Math.round(used)}% do orçamento de horas. Excesso de ${Math.round((consumed-estimated)*10)/10}h. Revise esforço restante e estimativa.`);

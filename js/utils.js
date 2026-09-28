@@ -16,10 +16,27 @@ Object.assign(SGP, {
  uid:()=>globalThis.crypto?.randomUUID?.()||'id-'+Date.now()+'-'+Math.random().toString(36).slice(2)
 });
 SGP.schemas={
- demandas:[['id','ID','required'],['code','Código','required'],['name','Nome da Demanda','required'],['description','Descrição resumida'],['type','Tipo','required'],['front','Frente','required'],['plan','Plan'],['pmo','PMO'],['leader','Tech Leader'],['bo','Responsável BO'],['phase','Fase Atual','required'],['status','Status','required'],['entry','Data de Entrada','date'],['start','Data Início','date!'],['technical','Data Entrega Técnica','date'],['homologation','Data Homologação','date'],['deployment','Data Implantação','date'],['end','Data Final Prevista','date!'],['estimated','Horas Estimadas','number'],['consumed','Horas Consumidas','number'],['progress','Percentual de Conclusão','percent'],['next','Próximo Marco'],['nextDate','Data Próximo Marco','date'],['dependency','Dependência'],['dependencyOwner','Responsável pela Dependência'],['risk','Risco'],['riskDescription','Descrição do Risco'],['git','Link Git'],['notes','Observação']],
+ demandas:[['id','ID','required'],['code','Código','required'],['name','Nome da Demanda','required'],['description','Descrição resumida'],['type','Tipo','required'],['front','Frente','required'],['plan','Plan'],['pmo','PMO'],['leader','Tech Leader'],['bo','Responsável BO'],['phase','Fase Atual','required'],['status','Status','required'],['entry','Data de Entrada','date'],['start','Data Início','date'],['technical','Data Entrega Técnica','date'],['homologation','Data Homologação','date'],['deployment','Data Implantação','date'],['end','Data Final Prevista','date'],['scheduleAuto','Cronograma pelas fases'],['deadline','Entrega acordada com cliente','date'],['estimated','Horas Estimadas','number'],['consumed','Horas Consumidas','number'],['progress','Percentual de Conclusão','percent'],['next','Próximo Marco'],['nextDate','Data Próximo Marco','date'],['dependency','Dependência'],['dependencyOwner','Responsável pela Dependência'],['risk','Risco'],['riskDescription','Descrição do Risco'],['git','Link Git'],['notes','Observação']],
  pessoas:[['id','ID','required'],['name','Nome','required'],['role','Função','required'],['front','Frente Principal','required'],['leader','Tech Leader'],['capacity','Capacidade Mensal','number!'],['active','Ativo','required']],
  alocacoes:[['person','Pessoa ID','required'],['demand','Demanda ID','required'],['start','Data Início','date!'],['end','Data Fim','date!'],['hours','Horas','number!'],['percent','Percentual','percent']],
- fases:[['demand','Demanda ID','required'],['phase','Fase','required'],['start','Data Início','date!'],['end','Data Fim','date!'],['status','Status','required']],
+ fases:[['demand','Demanda ID','required'],['phase','Fase','required'],['start','Data Início','date!'],['end','Data Fim','date!'],['status','Status','required'],['budget','Consome horas da estimativa'],['plannedHours','Horas planejadas','number']],
  marcos:[['demand','Demanda ID','required'],['name','Marco','required'],['date','Data','date!'],['status','Status','required'],['notes','Observação']]
 };
 SGP.sheetNames={demandas:'Demandas',pessoas:'Pessoas',alocacoes:'Alocacoes',fases:'Fases',marcos:'Marcos'};
+
+// Phase planning reserves effort; it does not record hours worked.
+SGP.phaseBudget=(data,id)=>{
+ const demand=data.demandas.find(d=>d.id===id),phases=data.fases.filter(p=>p.demand===id);
+ const planned=phases.filter(p=>p.budget==='Sim').reduce((sum,p)=>sum+(Number(p.plannedHours)||0),0);
+ return {planned,remaining:(Number(demand?.estimated)||0)-planned,unclassified:phases.filter(p=>!p.budget).length};
+};
+SGP.syncPhaseSchedule=data=>{
+ data.demandas.forEach(d=>{
+  if(d.scheduleAuto!=='Sim')return;
+  const phases=data.fases.filter(p=>p.demand===d.id&&SGP.validDate(p.start)&&SGP.validDate(p.end));
+  d.start=phases.map(p=>p.start).sort()[0]||'';d.end=phases.map(p=>p.end).sort().at(-1)||'';
+  for(const [field,name] of [['technical','Desenvolvimento'],['homologation','Homologação'],['deployment','Implantação']])d[field]=phases.filter(p=>p.phase===name).map(p=>p.end).sort().at(-1)||'';
+  const ordered=[...phases].sort((a,b)=>a.start.localeCompare(b.start));
+  d.phase=(ordered.find(p=>p.status==='Em andamento')||ordered.find(p=>!['Concluído','Cancelado'].includes(p.status))||ordered.at(-1))?.phase||'Entrada';
+ });return data;
+};

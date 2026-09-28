@@ -69,4 +69,22 @@ test('jornada: semana, fim de semana e sobreposição diária',()=>{
  assert.equal(SGP.allocationPercent(d,{person:'P',start:'2026-09-26',end:'2026-09-27',hours:8}),null);
  const invalid=structuredClone(demo);invalid.alocacoes[0].start='2026-09-26';invalid.alocacoes[0].end='2026-09-27';assert(SGP.validate(invalid).errors.some(e=>e.includes('segunda a sexta')));
 });
+test('fases: cronograma automático, orçamento, espera e preservação do consumo',()=>{
+ const d=SGP.empty();d.demandas=[{id:'D',code:'D',name:'Projeto',type:'Projeto',front:'Produção',phase:'Entrada',status:'Não iniciado',estimated:100,consumed:12,scheduleAuto:'Sim',deadline:'2026-10-15'}];
+ assert.equal(SGP.validate(d).errors.length,0);
+ SGP.syncPhaseSchedule(d);assert.equal(d.demandas[0].start,'');
+ d.fases=[{demand:'D',phase:'Levantamento',start:'2026-10-01',end:'2026-10-02',status:'Não iniciado',budget:'Sim',plannedHours:16},{demand:'D',phase:'Desenvolvimento',start:'2026-10-05',end:'2026-10-09',status:'Não iniciado',budget:'Sim',plannedHours:40},{demand:'D',phase:'Homologação',start:'2026-10-12',end:'2026-10-16',status:'Não iniciado',budget:'Não',plannedHours:0}];
+ SGP.syncPhaseSchedule(d);assert.equal(d.demandas[0].start,'2026-10-01');assert.equal(d.demandas[0].end,'2026-10-16');assert.equal(d.demandas[0].technical,'2026-10-09');assert.equal(d.demandas[0].consumed,12);assert.equal(SGP.phaseBudget(d,'D').remaining,44);
+ assert(SGP.validate(d).warnings.some(w=>w.includes('entrega acordada')));
+ d.fases[1].plannedHours=100;assert.equal(SGP.phaseBudget(d,'D').remaining,-16);assert(SGP.validate(d).warnings.some(w=>w.includes('116h')));
+ d.fases[2].plannedHours=8;assert(SGP.validate(d).errors.some(w=>w.includes('0 horas')));d.fases[2].plannedHours=0;
+ const roundtrip=SGP.parseWorkbook(SGP.workbook(d));assert.equal(roundtrip.data.fases[1].plannedHours,100);assert.equal(roundtrip.data.fases[2].budget,'Não');
+ d.fases=[];SGP.syncPhaseSchedule(d);assert.equal(d.demandas[0].end,'');assert.equal(SGP.phaseBudget(d,'D').remaining,100);
+ d.demandas[0].scheduleAuto='Não';d.demandas[0].start='2026-10-01';SGP.syncPhaseSchedule(d);assert.equal(d.demandas[0].start,'2026-10-01');
+});
+test('Excel legado: novas colunas são opcionais e valores originais preservados',()=>{
+ const wb=SGP.workbook(demo);
+ for(const key of ['demandas','fases']){const name=SGP.sheetNames[key],rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1});const omit=['Cronograma pelas fases','Entrega acordada com cliente','Consome horas da estimativa','Horas planejadas'];const indices=rows[0].map((h,i)=>omit.includes(h)?-1:i).filter(i=>i>=0);wb.Sheets[name]=XLSX.utils.aoa_to_sheet(rows.map(row=>indices.map(i=>row[i])));}
+ const result=SGP.parseWorkbook(wb);assert.deepEqual(result.errors,[]);assert.equal(result.data.demandas[0].consumed,demo.demandas[0].consumed);assert.equal(result.data.demandas[0].start,demo.demandas[0].start);
+});
 console.log(`${count} testes passaram.`);

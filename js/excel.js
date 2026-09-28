@@ -1,5 +1,5 @@
 const typeGuidance=(type,label)=>type?.startsWith('date')?'Data em AAAA-MM-DD (ex.: 2026-09-25).':type?.startsWith('number')?'Número não negativo (ex.: 160).':type==='percent'?'Percentual de 0 a 100 (ex.: 75).':`Texto para ${label}; preserve IDs e nomes das opções.`;
-SGP.excelGuidance={id:'ID único; não duplique e mantenha as referências nas outras abas.',demand:'ID da demanda existente.',person:'ID da pessoa existente.',front:'Use uma frente válida da lista na aba LEIA-ME.',status:'Use um status válido da lista na aba LEIA-ME.',phase:'Use uma fase válida da lista na aba LEIA-ME.',risk:'Use Nenhum, Baixa, Média, Alta ou Crítica.',type:'Use Projeto, Proposta, Melhoria, Evolução, Ticket N3 ou Outro.',active:'Use Sim ou Não.',hours:'Horas totais do intervalo; número não negativo.',capacity:'Campo legado mantido por compatibilidade. Não altera os cálculos: a jornada é de 8h por dia, de segunda a sexta.',percent:'Calculado automaticamente a partir de Horas, pessoa e período.',code:'Código curto e único da demanda (ex.: P001).'};
+SGP.excelGuidance={scheduleAuto:'Sim: datas gerais calculadas pelas fases. Não: datas manuais legadas.',deadline:'Data de entrega acordada com o cliente; independente do cronograma.',budget:'Sim para reservar horas da estimativa; Não para espera sem esforço. Em arquivos antigos, vazio significa não classificado.',plannedHours:'Horas de esforço planejadas na fase. Não são consumo realizado. Use 0 quando não consome estimativa.',id:'ID único; não duplique e mantenha as referências nas outras abas.',demand:'ID da demanda existente.',person:'ID da pessoa existente.',front:'Use uma frente válida da lista na aba LEIA-ME.',status:'Use um status válido da lista na aba LEIA-ME.',phase:'Use uma fase válida da lista na aba LEIA-ME.',risk:'Use Nenhum, Baixa, Média, Alta ou Crítica.',type:'Use Projeto, Proposta, Melhoria, Evolução, Ticket N3 ou Outro.',active:'Use Sim ou Não.',hours:'Horas totais do intervalo; número não negativo.',capacity:'Campo legado mantido por compatibilidade. Não altera os cálculos: a jornada é de 8h por dia, de segunda a sexta.',percent:'Calculado automaticamente a partir de Horas, pessoa e período.',code:'Código curto e único da demanda (ex.: P001).'};
 SGP.workbook=data=>{
  const wb=XLSX.utils.book_new();for(const [key,schema] of Object.entries(SGP.schemas)){
   const rows=[schema.map(([,label])=>label),...data[key].map(r=>schema.map(([field])=>key==='alocacoes'&&field==='percent'?SGP.allocationPercent(data,r)??'':r[field]??''))];
@@ -13,7 +13,7 @@ SGP.parseWorkbook=wb=>{
  for(const [key,schema] of Object.entries(SGP.schemas)){
   const ws=wb.Sheets[SGP.sheetNames[key]];if(!ws){structure.push(`Aba obrigatória ausente: ${SGP.sheetNames[key]}`);continue}
   const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true}),headers=(rows.shift()||[]).map(v=>String(v).trim());
-  schema.forEach(([,label])=>{if(!headers.includes(label))structure.push(`${SGP.sheetNames[key]}: coluna ausente ${label}`);if(headers.filter(h=>h===label).length>1)structure.push(`${SGP.sheetNames[key]}: coluna duplicada ${label}`)});
+  schema.forEach(([,label])=>{if(!headers.includes(label)&&!['Cronograma pelas fases','Entrega acordada com cliente','Consome horas da estimativa','Horas planejadas'].includes(label))structure.push(`${SGP.sheetNames[key]}: coluna ausente ${label}`);if(headers.filter(h=>h===label).length>1)structure.push(`${SGP.sheetNames[key]}: coluna duplicada ${label}`)});
   data[key]=rows.filter(row=>row.some(v=>v!=='')).map(row=>Object.fromEntries(schema.map(([f,label,type])=>{
    let v=row[headers.indexOf(label)]??'';
    if(type?.startsWith('date')&&v!==''){
@@ -22,7 +22,7 @@ SGP.parseWorkbook=wb=>{
   })));
  }
  data.alocacoes.forEach(a=>{const percent=SGP.allocationPercent(data,a);a.percent=percent===null?'':Math.round(percent*10)/10});
- const result=SGP.validate(data);result.errors.unshift(...structure);return {data,...result};
+ SGP.syncPhaseSchedule(data);const result=SGP.validate(data);result.errors.unshift(...structure);return {data,...result};
 };
 SGP.download=(name,content,type)=>{const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 SGP.exportExcel=(data,name='SGP-Business-Operations.xlsx')=>XLSX.writeFile(SGP.workbook(data),name,{compression:true});

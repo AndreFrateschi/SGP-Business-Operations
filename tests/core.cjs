@@ -134,4 +134,18 @@ test('fase vencida: contexto previsto hoje, sobreposições e períodos sem fase
  d.demandas[0].status='Concluído';assert.equal(SGP.executionRisks(d,[d.demandas[0]]).length,0);
  }finally{SGP.today=originalToday}
 });
+test('cobertura: esforço, espera, período, inativos e sobrecarga entre demandas',()=>{
+ const d=SGP.empty();const project={id:'D',code:'D',estimated:80,consumed:40};d.demandas=[project,{id:'E'}];d.pessoas=[{id:'P',name:'Pessoa',active:'Sim'}];
+ d.fases=[{demand:'D',budget:'Sim',plannedHours:80,start:'2026-10-05',end:'2026-10-16'},{demand:'D',budget:'Não',plannedHours:0,start:'2026-10-19',end:'2026-10-23'}];
+ d.alocacoes=[{demand:'D',person:'P',hours:40,start:'2026-10-05',end:'2026-10-16'}];
+ let c=SGP.coverage(d,project);assert.equal(c.required,80);assert.equal(c.allocated,40);assert.equal(c.missing,40);assert.equal(c.percent,50);assert(!c.incomplete);
+ c=SGP.coverage(d,project,'2026-10-05','2026-10-09');assert.equal(c.required,40);assert.equal(c.allocated,20);
+ c=SGP.coverage(d,project,'2026-10-10','2026-10-11');assert.equal(c.required,0);assert.equal(c.allocated,0);assert.equal(c.percent,null);
+ c=SGP.coverage(d,project,'2026-10-19','2026-10-23');assert.equal(c.required,0);
+ d.alocacoes.push({demand:'E',person:'P',hours:80,start:'2026-10-05',end:'2026-10-16'});assert.deepEqual(SGP.coverage(d,project).overloaded,['Pessoa']);
+ d.pessoas[0].active='Não';c=SGP.coverage(d,project);assert.equal(c.allocated,0);assert(c.notes.length);
+ d.pessoas[0].active='Sim';d.alocacoes[0].hours=100;c=SGP.coverage(d,project);assert.equal(c.excess,20);assert.equal(c.missing,0);
+ project.estimated=120;c=SGP.coverage(d,project);assert(c.incomplete);assert.equal(c.required,120);
+ const html=SGP.coveragePanel(d,[project]);assert(html.includes('Cobertura de horas'));assert(!html.includes('NaN'));
+});
 console.log(`${count} testes passaram.`);

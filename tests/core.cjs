@@ -180,4 +180,10 @@ test('marcos só aparecem após cadastro explícito',()=>{
  d.marcos[0].status='Concluído';assert.equal(SGP.deliveries(d,d.demandas,30).length,0);
  d.marcos=[];assert(!SGP.timeline(d,d.demandas,state).includes('class="milestone '));
 });
+test('risco de prazo exige data final válida e passada',()=>{
+ const d=SGP.empty(),project={id:'D',code:'D',status:'Não iniciado',risk:'Nenhum',end:'',estimated:0,consumed:0};d.demandas=[project];
+ assert.equal(SGP.risks(d,d.demandas,[]).length,0);
+ project.end=SGP.add(SGP.today(),-1);assert(SGP.risks(d,d.demandas,[]).some(r=>r.type==='Prazo vencido'));
+ project.status='Concluído';assert.equal(SGP.risks(d,d.demandas,[]).length,0);
+});
 console.log(`${count} testes passaram.`);

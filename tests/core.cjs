@@ -148,4 +148,25 @@ test('cobertura: esforço, espera, período, inativos e sobrecarga entre demanda
  project.estimated=120;c=SGP.coverage(d,project);assert(c.incomplete);assert.equal(c.required,120);
  const html=SGP.coveragePanel(d,[project]);assert(html.includes('Cobertura de horas'));assert(!html.includes('NaN'));
 });
+test('alocação criada na demanda: capacidade e percentual respeitam o período',()=>{
+ const d=SGP.empty();d.demandas=[{id:'D',code:'D',front:'Produção',status:'Em andamento'}];d.pessoas=[{id:'P',name:'Pessoa',front:'Produção',active:'Sim',capacity:160}];
+ d.alocacoes.push({person:'P',demand:'D',start:'2026-10-05',end:'2026-10-16',hours:40});
+ const a=d.alocacoes[0];assert.equal(SGP.workdays(a.start,a.end),10);assert.equal(SGP.allocationPercent(d,a),50);
+ let row=SGP.capacity(d,a.start,a.end)[0];assert.equal(row.available,80);assert.equal(row.hours,40);assert.equal(row.util,50);
+ row=SGP.capacity(d,'2026-10-05','2026-10-09')[0];assert.equal(row.available,40);assert.equal(row.hours,20);assert.equal(row.util,50);
+ row=SGP.capacity(d,'2026-09-01','2026-09-30')[0];assert.equal(row.hours,0);
+ assert.equal(SGP.hours(0.46),'0,5h');assert.equal(SGP.hours(row.hours),'0h');
+ d.alocacoes[0].hours=80;assert.equal(SGP.allocationPercent(d,d.alocacoes[0]),100);assert.equal(SGP.capacity(d,a.start,a.end)[0].hours,80);
+ d.pessoas[0].active='Não';assert.equal(SGP.capacity(d,a.start,a.end).length,0);
+});
+test('percentual acima de 100 e risco detalhado permanecem visíveis',()=>{
+ const d=structuredClone(demo),a=d.alocacoes[0];a.hours=SGP.workdays(a.start,a.end)*10;
+ a.percent=SGP.allocationPercent(d,a);assert.equal(a.percent,125);
+ assert(!SGP.validate(d).errors.some(error=>error.includes('Percentual')));
+ assert(SGP.capacity(d,a.start,a.end).find(p=>p.id===a.person).conflict);
+ const state={filters:{},deliveryDays:30,scale:'Mês',group:'front',closed:[],anchor:SGP.today().slice(0,7)+'-01'};
+ const start=SGP.today().slice(0,7)+'-01',end=SGP.add(start,30);
+ SGP.dashboard(d,d.demandas,state,start,end);
+ assert(SGP.kpiTips[3].includes(' — '));assert(SGP.kpiTips[3].includes('('));
+});
 console.log(`${count} testes passaram.`);

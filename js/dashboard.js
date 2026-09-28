@@ -17,7 +17,10 @@ SGP.executionRisks=(data,ds)=>{
    if(consumed>estimated)add('Horas excedidas','Alta',`${consumed}h consumidas de ${estimated}h estimadas: ${Math.round(used)}% do orçamento de horas. Excesso de ${Math.round((consumed-estimated)*10)/10}h. Revise esforço restante e estimativa.`);
    else if(hasProgress&&used>=50&&gap>=20)add('Consumo acima da evolução',gap>=40?'Alta':'Média',`${consumed}h de ${estimated}h (${Math.round(used)}% das horas) para ${progress}% concluído: diferença de ${Math.round(gap)} pontos percentuais. Confirme o avanço e revise o esforço restante.`);
   }
-  for(const p of data.fases.filter(p=>p.demand===d.id&&!['Concluído','Cancelado'].includes(p.status)&&p.end<today))add('Fase vencida','Alta',`${p.phase}: término previsto em ${SGP.fmt(p.end)}, há ${SGP.days(p.end,today)-1} dia(s), com status ${p.status}. Atualize a fase ou revise o prazo.`);
+  const phases=data.fases.filter(p=>p.demand===d.id);
+  const planned=[...new Set(phases.filter(p=>p.status!=='Cancelado'&&SGP.validDate(p.start)&&SGP.validDate(p.end)&&p.start<=today&&p.end>=today).map(p=>p.phase))];
+  const context=planned.length?` Pelo cronograma, hoje ${planned.length===1?'está prevista a fase':'estão previstas as fases'}: ${planned.join(', ')}.`:' Não há fase prevista para hoje no cronograma.';
+  for(const p of phases.filter(p=>!['Concluído','Cancelado'].includes(p.status)&&SGP.validDate(p.end)&&p.end<today))add('Fase vencida','Alta',`${p.phase}: término previsto em ${SGP.fmt(p.end)}, há ${SGP.days(p.end,today)-1} dia(s), com status ${p.status}.${context} Atualize o status da fase ou revise as datas planejadas.`);
  }
  return result;
 };

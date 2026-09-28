@@ -121,4 +121,17 @@ test('detalhes: resumo do projeto separado de fases, marcos e alocações',()=>{
  }
  const empty=SGP.empty();empty.demandas=[{id:'X',code:'X',name:'Sem planejamento',progress:0}];context.data=empty;context.id='X';vm.runInContext('detail(id)',context);assert(!captures.at(-1)[1].includes('NaN'));
 });
+test('fase vencida: contexto previsto hoje, sobreposições e períodos sem fase',()=>{
+ const originalToday=SGP.today;SGP.today=()=> '2026-10-15';
+ try{
+ const d=SGP.empty();d.demandas=[{id:'D',status:'Em andamento',estimated:0},{id:'OTHER',status:'Em andamento'}];
+ d.fases=[{demand:'D',phase:'Levantamento',start:'2026-10-01',end:'2026-10-05',status:'Não iniciado'},{demand:'D',phase:'Desenvolvimento',start:'2026-10-06',end:'2026-10-14',status:'Em andamento'},{demand:'D',phase:'Homologação',start:'2026-10-15',end:'2026-10-20',status:'Não iniciado'},{demand:'OTHER',phase:'Implantação',start:'2026-10-15',end:'2026-10-20',status:'Em andamento'}];
+ let risks=SGP.executionRisks(d,[d.demandas[0]]);assert.equal(risks.length,2);assert(risks.every(r=>r.description.includes('prevista a fase: Homologação')));assert(risks[0].description.includes('10 dia(s)'));assert(risks[1].description.includes('1 dia(s)'));assert(!risks[0].description.includes('Implantação'));
+ d.fases.push({demand:'D',phase:'Implantação',start:'2026-10-10',end:'2026-10-15',status:'Não iniciado'});risks=SGP.executionRisks(d,[d.demandas[0]]);assert.equal(risks.length,2);assert(risks[0].description.includes('previstas as fases: Homologação, Implantação'));
+ d.fases.at(-1).status='Cancelado';d.fases[2].start='2026-10-16';risks=SGP.executionRisks(d,[d.demandas[0]]);assert(risks[0].description.includes('Não há fase prevista'));
+ d.fases[0].status='Concluído';d.fases[1].status='Cancelado';assert.equal(SGP.executionRisks(d,[d.demandas[0]]).length,0);
+ d.fases[0].status='Bloqueado';assert.equal(SGP.executionRisks(d,[d.demandas[0]]).length,1);
+ d.demandas[0].status='Concluído';assert.equal(SGP.executionRisks(d,[d.demandas[0]]).length,0);
+ }finally{SGP.today=originalToday}
+});
 console.log(`${count} testes passaram.`);

@@ -87,4 +87,12 @@ test('Excel legado: novas colunas são opcionais e valores originais preservados
  for(const key of ['demandas','fases']){const name=SGP.sheetNames[key],rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1});const omit=['Cronograma pelas fases','Entrega acordada com cliente','Consome horas da estimativa','Horas planejadas'];const indices=rows[0].map((h,i)=>omit.includes(h)?-1:i).filter(i=>i>=0);wb.Sheets[name]=XLSX.utils.aoa_to_sheet(rows.map(row=>indices.map(i=>row[i])));}
  const result=SGP.parseWorkbook(wb);assert.deepEqual(result.errors,[]);assert.equal(result.data.demandas[0].consumed,demo.demandas[0].consumed);assert.equal(result.data.demandas[0].start,demo.demandas[0].start);
 });
+test('demonstração: fases classificadas, orçamento fechado e datas sincronizadas',()=>{
+ assert.deepEqual(SGP.validate(demo).warnings,[]);
+ for(const d of demo.demandas){const phases=demo.fases.filter(p=>p.demand===d.id),budget=SGP.phaseBudget(demo,d.id);
+ assert.equal(d.scheduleAuto,'Sim');assert.equal(budget.unclassified,0);assert.equal(budget.planned,d.estimated);assert.equal(budget.remaining,0);
+ assert(phases.some(p=>p.budget==='Não'&&p.plannedHours===0));assert(phases.some(p=>p.budget==='Sim'&&p.plannedHours>0));
+ assert.equal(d.start,phases.map(p=>p.start).sort()[0]);assert.equal(d.end,phases.map(p=>p.end).sort().at(-1));assert.equal(d.nextDate,d.technical);
+ }
+});
 console.log(`${count} testes passaram.`);

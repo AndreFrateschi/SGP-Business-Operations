@@ -89,3 +89,6 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 .delivery-window strong{color:#3c2632}
 :root[data-theme="dark"] .delivery-window{background:#321f2b;border-color:#9f5a7d;color:#e6cbd8}
 :root[data-theme="dark"] .delivery-window strong{color:#fff0f7}
+
+/* Delivery interval is a secondary fact, not an alert. */
+.delivery-interval{font-size:12px;line-height:1.6;color:var(--muted);margin:6px 0 16px}

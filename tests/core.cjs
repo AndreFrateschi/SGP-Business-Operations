@@ -105,4 +105,20 @@ test('marcos legados: migração idempotente, sem duplicação ou ressurreição
  const legacy=structuredClone(demo);legacy.demandas[0].next='Aceite extra';legacy.demandas[0].nextDate=legacy.demandas[0].end;
  const result=SGP.parseWorkbook(SGP.workbook(legacy));assert.deepEqual(result.errors,[]);assert(result.data.marcos.some(m=>m.name==='Aceite extra'));assert.equal(result.data.demandas[0].next,'');
 });
+test('detalhes: resumo do projeto separado de fases, marcos e alocações',()=>{
+ const source=fs.readFileSync(path.join(root,'js/app.js'),'utf8');
+ const detail=source.slice(source.indexOf('function detail(id)'),source.indexOf('function edit(key'));
+ const captures=[];const context=vm.createContext({data:demo,SGP,e:SGP.esc,modal:(...args)=>captures.push(args)});
+ vm.runInContext(detail,context);
+ for(const d of demo.demandas){
+  context.id=d.id;vm.runInContext('detail(id)',context);
+  const [title,body]=captures.at(-1),summary=body.slice(0,body.indexOf('<div class="delivery-window">'));
+  assert.equal(title,d.code+' · '+d.name);assert(summary.includes('<small>Evolução</small>'));assert(summary.includes('<small>Frente</small>'));
+  assert(!summary.includes('<small>Fase</small>'));assert(!summary.includes('<small>Próximo marco</small>'));
+  for(const key of ['fases','marcos','alocacoes'])assert(body.includes('data-new="'+key+'"'));
+  assert(body.includes('<th>Fase</th><th>Início</th><th>Fim</th>'));assert(body.includes('<th>Marco</th><th>Data</th>'));
+  assert(body.includes('Próximo marco pendente:'));assert(body.includes('Desenvolvimento'));
+ }
+ const empty=SGP.empty();empty.demandas=[{id:'X',code:'X',name:'Sem planejamento',progress:0}];context.data=empty;context.id='X';vm.runInContext('detail(id)',context);assert(!captures.at(-1)[1].includes('NaN'));
+});
 console.log(`${count} testes passaram.`);

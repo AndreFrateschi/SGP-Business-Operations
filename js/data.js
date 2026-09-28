@@ -1,6 +1,6 @@
 SGP.demo=()=>{
  const today=SGP.today(), month=today.slice(0,7)+'-01';
- const data={version:1,demandas:[],pessoas:[],alocacoes:[],fases:[],marcos:[],settings:{demo:true,demoRevision:'detail-planning-2'},updated:new Date().toISOString()};
+ const data={version:1,demandas:[],pessoas:[],alocacoes:[],fases:[],marcos:[],settings:{demo:true,demoRevision:'project-summary-1'},updated:new Date().toISOString()};
  const names=[['Melhoria Linha 1','Integração MES','Eficiência de montagem'],['Rastreabilidade','Relatórios QMS','Inspeção digital'],['Calibração ERP','Coleta de Dados','Auditoria de torque'],['Integração PLC','Dashboard IIoT','Monitoramento de células'],['Piloto Sensor','Plataforma IoT','Conectividade industrial']];
  const leaders=['Hewerton','Rodrigo','Serginho','Hissao','Raphera'];
  SGP.fronts.forEach((front,f)=>{
@@ -14,7 +14,7 @@ SGP.demo=()=>{
   });
  });
  SGP.syncPhaseSchedule(data);
- data.demandas.forEach(d=>{d.next='';d.nextDate='';d.description+=' Fases com esforço reservado; Proposta representa espera pela decisão do cliente, sem consumo de horas.';});
+ data.demandas.forEach(d=>{d.next='';d.nextDate='';d.notes='Exemplo com fases, marcos e alocações separados. Proposta representa espera pela decisão do cliente, sem consumo de horas.';});
  return data;
 };
 SGP.empty=()=>({version:1,demandas:[],pessoas:[],alocacoes:[],fases:[],marcos:[],settings:{},updated:new Date().toISOString()});

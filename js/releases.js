@@ -1,5 +1,9 @@
-// Numbered application releases start here; stored data keeps its independent schema version.
+// Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.1',date:'29/09/2026',title:'Notas de versão simplificadas',
+ intro:'A área de versões mostra somente as alterações disponíveis para quem usa a aplicação.',
+ changes:[['Configurações','As notas de cada versão podem ser abertas nesta tela, com a descrição das funcionalidades e regras, sem links externos.']]
+},{
  version:'1.0.0',date:'29/09/2026',title:'Primeira versão com histórico visível',
  intro:'Reúne as funcionalidades disponíveis nesta publicação. As alterações anteriores não tinham numeração de versão própria.',
  changes:[
@@ -11,4 +15,4 @@ SGP.releases=[{
   ['Acesso demonstrativo','O login SGP/SGP é apenas uma demonstração local; não substitui autenticação de servidor.']
  ]
 }];
-SGP.releasePanel=()=>`<div class="release-history"><h3>Sobre esta versão</h3><p>Versão da aplicação: <strong>${SGP.releases[0].version}</strong>. Clique em uma versão para ver as funcionalidades e regras incluídas. A versão dos dados é independente deste número.</p>${SGP.releases.map(release=>`<details class="release-entry"><summary><span><strong>Versão ${release.version}</strong> · ${release.date}</span><small>${release.title}</small></summary><div class="release-body"><p>${release.intro}</p><ul>${release.changes.map(([name,description])=>`<li><strong>${name}:</strong> ${description}</li>`).join('')}</ul><p><a href="https://github.com/AndreFrateschi/SGP-Business-Operations/tree/v${release.version}" target="_blank" rel="noopener noreferrer">Ver código desta versão no GitHub ↗</a></p></div></details>`).join('')}<p class="release-history-link">As mudanças anteriores à numeração podem ser consultadas no <a href="https://github.com/AndreFrateschi/SGP-Business-Operations/commits/main/" target="_blank" rel="noopener noreferrer">histórico de commits no GitHub ↗</a>.</p></div>`;
+SGP.releasePanel=()=>`<div class="release-history"><h3>Sobre esta versão</h3><p>Versão da aplicação: <strong>${SGP.releases[0].version}</strong>. Clique em uma versão para ver o que foi implementado. A versão dos dados é independente deste número.</p>${SGP.releases.map(release=>`<details class="release-entry"><summary><span><strong>Versão ${release.version}</strong> · ${release.date}</span><small>${release.title}</small></summary><div class="release-body"><p>${release.intro}</p><ul>${release.changes.map(([name,description])=>`<li><strong>${name}:</strong> ${description}</li>`).join('')}</ul></div></details>`).join('')}</div>`;

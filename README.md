@@ -86,7 +86,7 @@ Dados corrompidos não são automaticamente substituídos. Configurações ofere
 
 ## Versões da aplicação
 
-A numeração pública começa em **1.0.0 (29/09/2026)**. Em Configurações → Sobre esta versão, cada entrada abre as funcionalidades e regras daquela publicação. As alterações anteriores à numeração permanecem no histórico de commits do GitHub; não recebem números retroativos. Em futuras publicações, atualize `js/releases.js`, acrescente uma entrada para a nova versão e crie a tag Git correspondente. A versão da aplicação não é a versão `1` do esquema de dados local; uma atualização visual ou de regras não apaga nem migra automaticamente os dados do navegador.
+A numeração pública começa em **1.0.0 (29/09/2026)**; a versão atual é **1.0.1**. Em Configurações → Sobre esta versão, cada entrada abre as funcionalidades e regras daquela publicação, sem links para o repositório na interface. As alterações anteriores à numeração permanecem no histórico técnico do GitHub; não recebem números retroativos. Em futuras publicações, atualize `js/releases.js`, acrescente uma entrada para a nova versão e crie a tag Git correspondente. A versão da aplicação não é a versão `1` do esquema de dados local; uma atualização visual ou de regras não apaga nem migra automaticamente os dados do navegador.
 
 ## Arquitetura e arquivos
 

@@ -33,7 +33,7 @@ SGP.allocationPercent=(data,allocation)=>{
 };
 SGP.frontCapacity=rows=>SGP.fronts.map(front=>{const group=rows.filter(p=>p.front===front),available=group.reduce((s,p)=>s+p.available,0),hours=group.reduce((s,p)=>s+p.hours,0);return {front,people:group.length,available,hours,util:available?hours/available*100:hours?Infinity:0}});
 // Coverage is planned effort, never actual hours worked. Allocation remains demand-level.
-SGP.coverage=(data,d,start='',end='')=>{
+SGP.coverage=(data,d,start='',end='',checkOverload=true)=>{
  const period=!!(start&&end),phases=data.fases.filter(p=>p.demand===d.id),budget=SGP.phaseBudget(data,d.id);
  const share=(hours,a,b)=>{const days=SGP.workdays(a,b);return days?Number(hours||0)*SGP.workdays(period&&start>a?start:a,period&&end<b?end:b)/days:0};
  const incomplete=budget.unclassified>0||Math.abs(budget.remaining)>.001||phases.some(p=>p.budget==='Sim'&&Number(p.plannedHours)>0&&!SGP.workdays(p.start,p.end));
@@ -42,7 +42,7 @@ SGP.coverage=(data,d,start='',end='')=>{
  const allocated=allocations.filter(a=>active.has(a.person)).reduce((sum,a)=>sum+share(a.hours,a.start,a.end),0);
  const dates=allocations.flatMap(a=>[a.start,a.end]).filter(SGP.validDate).sort(),from=period?start:dates[0],to=period?end:dates.at(-1);
  const people=new Set(allocations.filter(a=>share(a.hours,a.start,a.end)>0).map(a=>a.person));
- const overloaded=from&&to?SGP.capacity(data,from,to).filter(p=>people.has(p.id)&&p.conflict).map(p=>p.name):[];
+ const overloaded=checkOverload&&from&&to?SGP.capacity(data,from,to).filter(p=>people.has(p.id)&&p.conflict).map(p=>p.name):[];
  const notes=[];if(incomplete)notes.push('Planejamento incompleto ou divergente');if(allocations.some(a=>!active.has(a.person)))notes.push('Alocações de pessoas inativas não contabilizadas');if(allocations.some(a=>Number(a.hours)>0&&!SGP.workdays(a.start,a.end)))notes.push('Alocação sem dias úteis');
  return {required,allocated,missing:Math.max(0,required-allocated),excess:Math.max(0,allocated-required),percent:required>0?allocated/required*100:null,overloaded,notes,incomplete};
 };

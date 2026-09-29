@@ -195,4 +195,14 @@ test('marco bloqueado aparece nos riscos e no indicador da visão geral',()=>{
  d.marcos[0].status='Concluído';assert.equal(SGP.risks(d,d.demandas,[]).length,0);
  d.marcos[0].status='Bloqueado';project.status='Concluído';assert.equal(SGP.risks(d,d.demandas,[]).length,0);
 });
+test('estimativa de 600h com 40h alocadas gera risco de cobertura',()=>{
+ const d=SGP.empty(),project={id:'D',code:'D',name:'Projeto',status:'Em andamento',estimated:600,consumed:0,risk:'Nenhum'};
+ d.demandas=[project];d.pessoas=[{id:'P',name:'Profissional',front:'Produção',active:'Sim'}];
+ d.alocacoes=[{demand:'D',person:'P',hours:40,start:'2026-10-19',end:'2026-12-31'}];
+ let risk=SGP.risks(d,d.demandas,[]).find(r=>r.type==='Horas sem alocação');
+ assert(risk);assert.equal(risk.severity,'Alta');assert(risk.description.includes('560h'));assert(risk.description.includes('40h'));
+ d.alocacoes[0].hours=600;assert(!SGP.risks(d,d.demandas,[]).some(r=>r.type==='Horas sem alocação'));
+ d.alocacoes[0].hours=40;project.status='Concluído';assert(!SGP.risks(d,d.demandas,[]).some(r=>r.type==='Horas sem alocação'));
+ project.status='Em andamento';d.pessoas[0].active='Não';risk=SGP.risks(d,d.demandas,[]).find(r=>r.type==='Horas sem alocação');assert(risk.description.includes('600h'));
+});
 console.log(`${count} testes passaram.`);

@@ -82,6 +82,8 @@ async function importFile(file){if(!file)return;try{if(file.size>20*1024*1024)th
  if($('#accept-warnings'))$('#accept-warnings').onchange=ev=>$('#confirm-import').disabled=!!result.errors.length||!ev.target.checked;
  $('#confirm-import').onclick=()=>{if(pending.errors.length||pending.warnings.length&&!$('#accept-warnings').checked)return;const previous=structuredClone(data),next={...pending.data,settings:{...pending.data.settings,demo:false},version:1};if(commit(next)){rollback=previous;pending=null;$('#dialog').close();toast('Importação concluída.');render()}};
  }catch(err){modal('Não foi possível importar',`<div class="modal-body"><p class="form-error">${e(err.message||'Arquivo inválido ou incompatível.')}</p><p>A base atual foi preservada.</p></div>`,'<button data-action="close">Fechar</button>')}}
+ let printClosed=null;
+ window.addEventListener('afterprint',()=>{if(printClosed!==null){document.body.classList.remove('print-timeline');state.closed=printClosed;printClosed=null;render()}});
  document.addEventListener('click',ev=>{
   const b=ev.target.closest('button');if(!b)return;const a=b.dataset;
   if(a.page){state.page=a.page;state.pipelineReturn=null;render()}
@@ -109,6 +111,7 @@ async function importFile(file){if(!file)return;try{if(file.size>20*1024*1024)th
   if(a.action==='backup')SGP.download('SGP-backup.json',JSON.stringify(data,null,2),'application/json');
   if(a.action==='recovery')SGP.download('SGP-recuperacao.json',localStorage.getItem(SGP.storage.key)||'','application/json');
   if(a.action==='print')window.print();
+  if(a.action==='print-timeline'){printClosed=[...state.closed];state.closed=[];render();document.body.classList.add('print-timeline');requestAnimationFrame(()=>window.print())}
   if(a.action==='restore')confirmAction('Restaurar demonstração?','A base atual será substituída por dados fictícios. Exporte um backup se desejar preservá-la.',()=>{const next=SGP.demo();next.settings.demo=true;return commit(next)});
   if(a.action==='clear')confirmAction('Limpar todos os dados locais?','Todas as demandas, pessoas, alocações, fases e marcos serão removidos. Essa ação não pode ser desfeita.',()=>{const next=SGP.empty();next.settings.demo=false;if(commit(next)){rollback=null;render();return true}return false});
   if(a.action==='rollback'&&rollback)confirmAction('Desfazer importação?','A base anterior à última importação será restaurada. Alterações feitas depois dela serão perdidas.',()=>{if(commit(rollback)){rollback=null;render();return true}return false});

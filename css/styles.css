@@ -92,3 +92,33 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 
 /* Delivery interval is a secondary fact, not an alert. */
 .delivery-interval{font-size:12px;line-height:1.6;color:var(--muted);margin:6px 0 16px}
+
+/* A dedicated, paper-sized view of the active executive timeline. */
+.timeline-print-heading{display:none}
+@page{size:A4 landscape;margin:10mm}
+@media print{
+  body.print-timeline{background:#fff!important;color:#172a3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.print-timeline main{margin:0!important;padding:0!important;width:100%!important}
+  body.print-timeline #content>*:not(.timeline-panel){display:none!important}
+  body.print-timeline .timeline-panel{position:static!important;inset:auto!important;display:block!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;background:#fff!important;color:#172a3c!important;break-inside:auto!important}
+  body.print-timeline .timeline-print-heading{display:flex!important;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 8mm;border-bottom:2px solid #e20074;padding-bottom:3mm;font-size:14pt}
+  body.print-timeline .timeline-print-heading span{font-size:9pt;font-weight:400;color:#4b6072}
+  body.print-timeline .timeline-panel .panel-head{display:none!important}
+  body.print-timeline .timeline-panel .legend{display:flex!important;padding:0 0 4mm;gap:9px;font-size:7pt;color:#334b60}
+  body.print-timeline .timeline-panel .timeline-scroll{display:block!important;max-height:none!important;min-height:0!important;overflow:visible!important;margin:0!important;border:1px solid #dce5ed!important;border-radius:0!important}
+  body.print-timeline .timeline-panel .timeline{min-width:0!important;width:100%!important}
+  body.print-timeline .timeline-panel .trow,body.print-timeline .timeline-panel .group-row{grid-template-columns:34% 66%!important;break-inside:avoid!important;page-break-inside:avoid!important;min-height:7mm!important}
+  body.print-timeline .timeline-panel .tlabel{position:static!important;z-index:auto!important;grid-template-columns:minmax(0,1fr) 18% 14% 14%!important;padding:0 2mm!important;gap:1mm!important;font-size:7pt!important;background:#fff!important;color:#172a3c!important}
+  body.print-timeline .timeline-panel .tlabel button{display:block!important;min-width:0!important;padding:0!important;font-size:7pt!important;color:#172a3c!important;text-overflow:clip;white-space:normal;line-height:1.2}
+  body.print-timeline .timeline-panel .tlabel time{font-size:6pt!important;color:#435b6f!important}
+  body.print-timeline .timeline-panel .group-row .tlabel{display:block!important;background:#f0f4f7!important;border-left:3px solid var(--front)!important;padding:1.5mm 2mm!important}
+  body.print-timeline .timeline-panel .group-row .track{background:#f0f4f7!important}
+  body.print-timeline .timeline-panel .theader{position:static!important;background:#edf2f6!important;min-height:9mm!important}
+  body.print-timeline .timeline-panel .theader .tlabel,body.print-timeline .timeline-panel .thead-track{background:#edf2f6!important}
+  body.print-timeline .timeline-panel .tick{font-size:6pt!important;gap:0!important;overflow:hidden}
+  body.print-timeline .timeline-panel .tick strong{font-size:7pt!important;white-space:nowrap}
+  body.print-timeline .timeline-panel .tick span{display:none!important}
+  body.print-timeline .timeline-panel .phase-bar{display:block!important;opacity:1!important;top:2mm!important;height:3mm!important}
+  body.print-timeline .timeline-panel .milestone{top:2mm!important}
+  body.print-timeline .timeline-panel .today-tag{display:none!important}
+}

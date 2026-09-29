@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.6',date:'29/09/2026',title:'Cartões da visão geral ajustados',
+ intro:'Os rótulos dos indicadores permanecem dentro dos cartões em telas mais estreitas.',
+ changes:[['Visão geral','O texto dos indicadores quebra linha conforme o espaço disponível, inclusive com o menu lateral aberto.']]
+},{
  version:'1.0.5',date:'29/09/2026',title:'Status e alertas separados',
  intro:'A visão geral distingue o status informado dos alertas identificados.',
  changes:[['Visão geral','O gráfico volta a mostrar o status cadastrado da demanda. O cartão Demandas com alertas informa separadamente quantas demandas exigem atenção, como as que têm um marco bloqueado.']]

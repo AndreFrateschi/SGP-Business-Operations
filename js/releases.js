@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.2',date:'29/09/2026',title:'Dias desde a entrada no pipeline',
+ intro:'O tempo na operação passa a usar a data de entrada registrada na demanda.',
+ changes:[['Pipeline','Novas demandas recebem automaticamente a data de entrada do dia. Demandas antigas sem essa data mostram a opção Informar data; o indicador conta dias corridos desde a data cadastrada.']]
+},{
  version:'1.0.1',date:'29/09/2026',title:'Notas de versão simplificadas',
  intro:'A área de versões mostra somente as alterações disponíveis para quem usa a aplicação.',
  changes:[['Configurações','As notas de cada versão podem ser abertas nesta tela, com a descrição das funcionalidades e regras, sem links externos.']]

@@ -25,7 +25,7 @@ A primeira execução cria dados fictícios relativos ao mês atual. O selo “D
 - Cronograma: agrupamento por frente ou fase, escalas semana/mês/trimestre, navegação e linha Hoje. Role dentro do painel para ver todas as demandas. Cabeçalho e nomes ficam fixos no scroll.
 - Demandas: busca, filtros globais, cadastro, edição e detalhes de todas as informações solicitadas.
 - Capacidade: por frente principal da pessoa ou por pessoa; seleciona o intervalo pelos filtros De/Até. Sem intervalo, usa o mês atual.
-- Pipeline: quantidades por fase e acesso às demandas de cada etapa.
+- Pipeline: quantidades por fase, acesso às demandas e dias corridos desde a data de entrada. Novas demandas recebem a data de criação como entrada; registros antigos sem data oferecem a ação “Informar data”, sem estimativa automática da data histórica.
 - Pessoas: cadastro e alocações independentes. Cadastros inativos são preservados, mas não somam capacidade.
 - Relatórios: capacidade e comparação entre entrega técnica e final; impressão ou PDF pelo navegador.
 - Configurações: backups JSON, rollback da última importação, restauração da demonstração e limpeza confirmada.
@@ -86,7 +86,7 @@ Dados corrompidos não são automaticamente substituídos. Configurações ofere
 
 ## Versões da aplicação
 
-A numeração pública começa em **1.0.0 (29/09/2026)**; a versão atual é **1.0.1**. Em Configurações → Sobre esta versão, cada entrada abre as funcionalidades e regras daquela publicação, sem links para o repositório na interface. Em futuras versões funcionais, atualize `js/releases.js`, acrescente uma entrada para a nova versão e crie a tag Git correspondente. A versão da aplicação não é a versão `1` do esquema de dados local; uma atualização visual ou de regras não apaga nem migra automaticamente os dados do navegador.
+A numeração pública começa em **1.0.0 (29/09/2026)**; a versão atual é **1.0.2**. Em Configurações → Sobre esta versão, cada entrada abre as funcionalidades e regras daquela publicação, sem links para o repositório na interface. Em futuras versões funcionais, atualize `js/releases.js`, acrescente uma entrada para a nova versão e crie a tag Git correspondente. A versão da aplicação não é a versão `1` do esquema de dados local; uma atualização visual ou de regras não apaga nem migra automaticamente os dados do navegador.
 
 ## Arquitetura e arquivos
 

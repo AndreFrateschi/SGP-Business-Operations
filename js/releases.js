@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.9',date:'29/09/2026',title:'Busca rápida de pessoas',
+ intro:'A aba Pessoas permite localizar profissionais pelo nome enquanto se digita.',
+ changes:[['Pessoas e alocações','A busca por nome filtra as pessoas e suas alocações, sem exigir acentos nem diferenciar letras maiúsculas de minúsculas.']]
+},{
  version:'1.0.8',date:'29/09/2026',title:'Cobertura de horas nas datas das fases',
  intro:'Horas suficientes no total passam a ser verificadas também contra o calendário das fases.',
  changes:[['Alocações e alertas','Quando uma fase que consome horas não tem cobertura nos seus dias úteis, a aplicação mostra Alocação fora do período no sininho e no relatório de cobertura. Fases sem consumo de horas não geram esse aviso.']]

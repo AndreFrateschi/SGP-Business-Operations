@@ -31,6 +31,23 @@ SGP.allocationPercent=(data,allocation)=>{
  const available=SGP.workdays(allocation.start,allocation.end)*8;
  return available>0?hours/available*100:null;
 };
+// Preview complete workload across demands. Editing replaces the existing allocation.
+SGP.personSchedule=(data,personId,start,end,candidate=null,excludeIndex=-1)=>{
+ if(!SGP.validDate(start)||!SGP.validDate(end)||end<start)return null;
+ const workdays=SGP.workdays(start,end),candidateHours=Number(candidate?.hours||0);
+ const addedDaily=candidate&&workdays&&Number.isFinite(candidateHours)&&candidateHours>=0?candidateHours/workdays:0;
+ const allocations=data.alocacoes.map((a,index)=>({...a,index})).filter(a=>a.person===personId&&a.index!==excludeIndex&&a.start<=end&&a.end>=start&&SGP.workdays(a.start,a.end)>0).map(a=>({...a,daily:Number(a.hours)/SGP.workdays(a.start,a.end)}));
+ const days=[],weeks=new Map();let peak=0,existingPeak=0,overloadedDays=0;
+ for(let day=start;day<=end;day=SGP.add(day,1)){
+  if(!SGP.isWorkday(day))continue;
+  const present=allocations.filter(a=>a.start<=day&&a.end>=day),existing=present.reduce((sum,a)=>sum+a.daily,0),added=candidate?addedDaily:0,total=existing+added,overloaded=total>8+.001;
+  peak=Math.max(peak,total);existingPeak=Math.max(existingPeak,existing);if(overloaded)overloadedDays++;
+  const row={date:day,existing,added,total,overloaded,demands:[...new Set(present.map(a=>a.demand))]};days.push(row);
+  const monday=SGP.add(day,-((SGP.date(day).getUTCDay()+6)%7)),week=weeks.get(monday)||{start:monday,end:SGP.add(monday,6),existingPeak:0,totalPeak:0,overloadedDates:[]};
+  week.existingPeak=Math.max(week.existingPeak,existing);week.totalPeak=Math.max(week.totalPeak,total);if(overloaded)week.overloadedDates.push(day);weeks.set(monday,week);
+ }
+ return {days,weeks:[...weeks.values()],allocations,workdays,addedDaily,existingPeak,peak,overloadedDays};
+};
 SGP.frontCapacity=rows=>SGP.fronts.map(front=>{const group=rows.filter(p=>p.front===front),available=group.reduce((s,p)=>s+p.available,0),hours=group.reduce((s,p)=>s+p.hours,0);return {front,people:group.length,available,hours,util:available?hours/available*100:hours?Infinity:0}});
 // Compare planned effort with demand-level allocations on each working day.
 // Hours are spread evenly across each phase/allocation interval; this does not assign people to phases.

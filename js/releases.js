@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.10',date:'29/09/2026',title:'Agenda de alocação por pessoa',
+ intro:'A ocupação do profissional fica visível antes de confirmar uma alocação.',
+ changes:[['Alocações','O cadastro mostra uma prévia por semana, considerando todas as demandas da pessoa e avisando quando a soma ultrapassa 8 horas em um dia útil. Ao editar, substitui a alocação anterior na simulação.'],['Pessoas e capacidade','A agenda individual reúne períodos e projetos da pessoa; a capacidade por pessoa considera todas as demandas, mesmo com filtros aplicados.']]
+},{
  version:'1.0.9',date:'29/09/2026',title:'Busca rápida de pessoas',
  intro:'A aba Pessoas permite localizar profissionais pelo nome enquanto se digita.',
  changes:[['Pessoas e alocações','A busca por nome filtra as pessoas e suas alocações, sem exigir acentos nem diferenciar letras maiúsculas de minúsculas.']]

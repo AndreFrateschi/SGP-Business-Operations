@@ -120,6 +120,9 @@ test('detalhes: resumo do projeto separado de fases, marcos e alocações',()=>{
   assert(body.includes('<th>Fase</th><th>Início</th><th>Fim</th>'));assert(body.includes('<th>Marco</th><th>Data</th>'));
   assert(body.includes('Próximo marco pendente:'));assert(body.includes('Desenvolvimento'));
  }
+ const partial=SGP.empty();partial.demandas=[{id:'P',code:'P',name:'Teste',estimated:600,consumed:0}];partial.fases=[{demand:'P',phase:'Desenvolvimento',budget:'Sim',plannedHours:40,start:'2026-09-28',end:'2026-10-02',status:'Em andamento'}];context.data=partial;context.id='P';vm.runInContext('detail(id)',context);
+ assert(captures.at(-1)[1].includes('As fases ainda não contemplam toda a estimativa da demanda: faltam 560h para planejar.'));
+ partial.demandas[0].estimated=40;vm.runInContext('detail(id)',context);assert(!captures.at(-1)[1].includes('As fases ainda não contemplam'));
  const empty=SGP.empty();empty.demandas=[{id:'X',code:'X',name:'Sem planejamento',progress:0}];context.data=empty;context.id='X';vm.runInContext('detail(id)',context);assert(!captures.at(-1)[1].includes('NaN'));
 });
 test('fase vencida: contexto previsto hoje, sobreposições e períodos sem fase',()=>{

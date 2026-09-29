@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.5',date:'29/09/2026',title:'Status e alertas separados',
+ intro:'A visão geral distingue o status informado dos alertas identificados.',
+ changes:[['Visão geral','O gráfico volta a mostrar o status cadastrado da demanda. O cartão Demandas com alertas informa separadamente quantas demandas exigem atenção, como as que têm um marco bloqueado.']]
+},{
  version:'1.0.4',date:'29/09/2026',title:'Risco coerente na visão geral',
  intro:'O gráfico da visão geral reflete os alertas identificados para cada demanda.',
  changes:[['Situação das demandas','Demandas com alertas, como marco bloqueado, aparecem em Com alertas / em risco no gráfico, mesmo que o status cadastrado continue Em andamento.']]

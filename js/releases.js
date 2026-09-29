@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.7',date:'29/09/2026',title:'Indicadores mais compactos',
+ intro:'Os cartões da visão geral ocupam menos altura na tela.',
+ changes:[['Visão geral','Ícones, números e espaços dos cartões foram reduzidos. Em telas menores, as descrições secundárias são ocultadas para manter os rótulos legíveis.']]
+},{
  version:'1.0.6',date:'29/09/2026',title:'Cartões da visão geral ajustados',
  intro:'Os rótulos dos indicadores permanecem dentro dos cartões em telas mais estreitas.',
  changes:[['Visão geral','O texto dos indicadores quebra linha conforme o espaço disponível, inclusive com o menu lateral aberto.']]

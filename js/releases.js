@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.8',date:'29/09/2026',title:'Cobertura de horas nas datas das fases',
+ intro:'Horas suficientes no total passam a ser verificadas também contra o calendário das fases.',
+ changes:[['Alocações e alertas','Quando uma fase que consome horas não tem cobertura nos seus dias úteis, a aplicação mostra Alocação fora do período no sininho e no relatório de cobertura. Fases sem consumo de horas não geram esse aviso.']]
+},{
  version:'1.0.7',date:'29/09/2026',title:'Indicadores mais compactos',
  intro:'Os cartões da visão geral ocupam menos altura na tela.',
  changes:[['Visão geral','Ícones, números e espaços dos cartões foram reduzidos. Em telas menores, as descrições secundárias são ocultadas para manter os rótulos legíveis.']]

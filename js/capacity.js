@@ -32,6 +32,25 @@ SGP.allocationPercent=(data,allocation)=>{
  return available>0?hours/available*100:null;
 };
 SGP.frontCapacity=rows=>SGP.fronts.map(front=>{const group=rows.filter(p=>p.front===front),available=group.reduce((s,p)=>s+p.available,0),hours=group.reduce((s,p)=>s+p.hours,0);return {front,people:group.length,available,hours,util:available?hours/available*100:hours?Infinity:0}});
+// Compare planned effort with demand-level allocations on each working day.
+// Hours are spread evenly across each phase/allocation interval; this does not assign people to phases.
+SGP.scheduleCoverage=(data,d,start='',end='')=>{
+ const days=new Map(),period=!!(start&&end);
+ for(const p of data.fases.filter(p=>p.demand===d.id&&p.budget==='Sim'&&Number(p.plannedHours)>0&&!['Concluído','Cancelado'].includes(p.status))){
+  const totalDays=SGP.workdays(p.start,p.end);if(!totalDays)continue;
+  const from=period&&start>p.start?start:p.start,to=period&&end<p.end?end:p.end;
+  for(let day=from;day<=to;day=SGP.add(day,1))if(SGP.isWorkday(day)){
+   const row=days.get(day)||{required:0,phases:new Set()};row.required+=Number(p.plannedHours)/totalDays;row.phases.add(`${p.phase} (${SGP.fmt(p.start)} a ${SGP.fmt(p.end)})`);days.set(day,row);
+  }
+ }
+ const active=new Set(data.pessoas.filter(p=>p.active==='Sim').map(p=>p.id));
+ const allocations=data.alocacoes.filter(a=>a.demand===d.id&&active.has(a.person)&&SGP.workdays(a.start,a.end)>0).map(a=>({...a,daily:Number(a.hours)/SGP.workdays(a.start,a.end)}));
+ let missingHours=0,missingDays=0,first='',last='';const phases=new Set();
+ for(const [day,row] of days){const allocated=allocations.reduce((sum,a)=>sum+(a.start<=day&&a.end>=day?a.daily:0),0);if(row.required-allocated<=.001)continue;
+  missingHours+=row.required-allocated;missingDays++;first=first||day;last=day;row.phases.forEach(p=>phases.add(p));
+ }
+ return {missingHours,missingDays,first,last,phases:[...phases]};
+};
 // Coverage is planned effort, never actual hours worked. Allocation remains demand-level.
 SGP.coverage=(data,d,start='',end='',checkOverload=true)=>{
  const period=!!(start&&end),phases=data.fases.filter(p=>p.demand===d.id),budget=SGP.phaseBudget(data,d.id);

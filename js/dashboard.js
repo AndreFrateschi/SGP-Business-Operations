@@ -31,6 +31,8 @@ SGP.executionPanel=risks=>{
 };
 SGP.risks=(data,ds,caps)=>{
  const risks=SGP.executionRisks(data,ds);ds.filter(d=>!['Concluído','Cancelado'].includes(d.status)).forEach(d=>{const overdue=SGP.validDate(d.end)&&d.end<SGP.today();if(d.risk&&d.risk!=='Nenhum'||['Em risco','Bloqueado','Aguardando cliente','Aguardando aprovação'].includes(d.status)||overdue)risks.push({d,type:overdue?'Prazo vencido':d.dependency?'Dependência':d.status,severity:d.risk&&d.risk!=='Nenhum'?d.risk:'Média',description:d.riskDescription||d.dependency||'Revisar prazo e situação da demanda.'})});
+ const activeDemands=new Map(ds.filter(d=>!['Concluído','Cancelado'].includes(d.status)).map(d=>[d.id,d]));
+ data.marcos.filter(m=>m.status==='Bloqueado'&&activeDemands.has(m.demand)).forEach(m=>{const d=activeDemands.get(m.demand);risks.push({d,type:'Marco bloqueado',severity:'Alta',description:`${m.name} (${SGP.fmt(m.date)}): ${m.notes||'revise o impedimento deste marco.'}`})});
  caps.forEach(p=>p.allocations.filter(a=>Number(a.hours)>0&&!SGP.workdays(a.start,a.end)).forEach(a=>{const d=ds.find(d=>d.id===a.demand);if(d)risks.push({d,type:'Alocação sem dia útil',severity:'Alta',description:p.name+': o intervalo contém apenas fim de semana. Corrija as datas; essas horas não entram na ocupação calculada.'})}));
  caps.filter(p=>p.conflict).forEach(p=>{const unique=new Set();p.allocations.forEach(a=>{if(unique.has(a.demand))return;unique.add(a.demand);const d=ds.find(d=>d.id===a.demand);if(d)risks.push({d,type:'Sobrealocação',severity:'Alta',description:p.name+': horas diárias acima da capacidade em parte do período.'})})});return risks;
 };

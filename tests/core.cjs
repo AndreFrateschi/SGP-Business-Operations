@@ -186,4 +186,13 @@ test('risco de prazo exige data final válida e passada',()=>{
  project.end=SGP.add(SGP.today(),-1);assert(SGP.risks(d,d.demandas,[]).some(r=>r.type==='Prazo vencido'));
  project.status='Concluído';assert.equal(SGP.risks(d,d.demandas,[]).length,0);
 });
+test('marco bloqueado aparece nos riscos e no indicador da visão geral',()=>{
+ const d=SGP.empty(),project={id:'D',code:'D',name:'Projeto',front:'Produção',status:'Em andamento',risk:'Nenhum',estimated:0,consumed:0};
+ d.demandas=[project];d.marcos=[{demand:'D',name:'Aceite técnico',date:SGP.add(SGP.today(),10),status:'Bloqueado',notes:'Aguardando liberação'}];
+ let risks=SGP.risks(d,d.demandas,[]);assert.equal(risks.length,1);assert.equal(risks[0].type,'Marco bloqueado');assert.equal(risks[0].severity,'Alta');assert(risks[0].description.includes('Aceite técnico'));assert(risks[0].description.includes('Aguardando liberação'));
+ const state={filters:{},deliveryDays:30,scale:'Mês',group:'front',closed:[],anchor:SGP.today().slice(0,7)+'-01'};
+ const html=SGP.dashboard(d,d.demandas,state,SGP.today().slice(0,7)+'-01',SGP.today());assert(html.includes('Demandas em risco'));assert(SGP.kpiTips[3].includes('Marco bloqueado'));
+ d.marcos[0].status='Concluído';assert.equal(SGP.risks(d,d.demandas,[]).length,0);
+ d.marcos[0].status='Bloqueado';project.status='Concluído';assert.equal(SGP.risks(d,d.demandas,[]).length,0);
+});
 console.log(`${count} testes passaram.`);

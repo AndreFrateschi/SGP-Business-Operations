@@ -1,9 +1,10 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const root=path.join(__dirname,'..');global.window=global;global.XLSX=require('../vendor/xlsx.full.min.js');const store=new Map();global.localStorage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
-['utils','data','validation','capacity','excel','timeline','dashboard'].forEach(f=>vm.runInThisContext(fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')));
+['utils','data','validation','capacity','excel','timeline','dashboard','releases'].forEach(f=>vm.runInThisContext(fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')));
 let count=0;const test=(name,fn)=>{fn();count++;console.log('PASS',name)};
 const demo=SGP.demo();
 test('demo: referências e datas válidas',()=>assert.deepEqual(SGP.validate(demo).errors,[]));
+test('histórico de versões mostra regras da aplicação sem alterar a versão dos dados',()=>{const html=SGP.releasePanel(),shell=fs.readFileSync(path.join(root,'index.html'),'utf8'),app=fs.readFileSync(path.join(root,'js/app.js'),'utf8');assert.equal(SGP.releases[0].version,'1.0.0');assert(html.includes('<details class="release-entry">'));assert(html.includes('Cobertura e riscos'));assert(html.includes('Filtros e dados'));assert(html.includes('/tree/v1.0.0'));assert(shell.indexOf('js/releases.js')<shell.indexOf('js/app.js'));assert(app.includes('SGP.releasePanel()'));assert.equal(demo.version,1)});
 test('data impossível, referência e ID duplicado',()=>{const d=structuredClone(demo);d.demandas[0].start='2026-02-30';d.pessoas.push(d.pessoas[0]);d.alocacoes[0].person='inexistente';const v=SGP.validate(d);assert(v.errors.some(x=>x.includes('data inválida')));assert(v.errors.some(x=>x.includes('ID duplicado')));assert(v.errors.some(x=>x.includes('Pessoa inexistente')))});
 test('ordem invertida e números inválidos',()=>{const d=structuredClone(demo);d.alocacoes[0].end='2000-01-01';d.demandas[0].progress=101;d.pessoas[0].capacity=-1;assert(SGP.validate(d).errors.length>=3)});
 test('referências em fases e marcos',()=>{const d=structuredClone(demo);d.fases[0].demand='x';d.marcos[0].demand='x';assert.equal(SGP.validate(d).errors.length,2)});

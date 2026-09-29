@@ -84,6 +84,10 @@ A importação substitui o conjunto inteiro; não faz merge por ID. O rollback �
 
 Dados corrompidos não são automaticamente substituídos. Configurações oferece exportação do conteúdo de recuperação. Falta de espaço gera mensagem e a operação de gravação é recusada. Exportações regulares são necessárias; limpar os dados do navegador remove a base. Evite editar a mesma origem simultaneamente em várias abas: não há controle de concorrência.
 
+## Versões da aplicação
+
+A numeração pública começa em **1.0.0 (29/09/2026)**. Em Configurações → Sobre esta versão, cada entrada abre as funcionalidades e regras daquela publicação. As alterações anteriores à numeração permanecem no histórico de commits do GitHub; não recebem números retroativos. Em futuras publicações, atualize `js/releases.js`, acrescente uma entrada para a nova versão e crie a tag Git correspondente. A versão da aplicação não é a versão `1` do esquema de dados local; uma atualização visual ou de regras não apaga nem migra automaticamente os dados do navegador.
+
 ## Arquitetura e arquivos
 
 - `index.html`: shell semântico e carregamento ordenado de scripts clássicos, compatível com abertura local.
@@ -95,6 +99,7 @@ Dados corrompidos não são automaticamente substituídos. Configurações ofere
 - `js/excel.js`: modelo, importação, exportação e backup.
 - `js/timeline.js`: fases, marcos, períodos e agrupamentos.
 - `js/dashboard.js`: indicadores, tabelas e painéis.
+- `js/releases.js`: versão pública e notas exibidas em Configurações.
 - `js/app.js`: navegação, estado, filtros, formulários e confirmação.
 - `vendor/`: SheetJS CE 0.20.3 e licença Apache 2.0.
 - `tests/core.cjs`: testes de regras e round-trip XLSX; gera massa de teste de volume.
@@ -107,13 +112,13 @@ O namespace SGP evita dependências de bundler e de servidor de módulos. Camada
 
 Não são incluídos logo oficial, sprint, histórias, tarefas, bugs, apontamento de horas, workflow de aprovação ou controle financeiro. A sidebar combina o símbolo T e quadrados do arquivo oficial da T-Systems com a assinatura SGP / Business Operations, conforme solicitado. A origem está documentada em assets/README.md. O magenta (#E20074) aparece também nas ações e seleções. Isso mantém o foco em visibilidade, previsibilidade, capacidade, dependências, riscos e entregas.
 
-## Publicar posteriormente no GitHub Pages
+## Publicação no GitHub Pages
 
-Este projeto é estático, usa caminhos relativos e não requer build. Crie um repositório **novo**, por exemplo `SGP-Business-Operations`, e publique o conteúdo desta pasta na raiz da branch `main`. Não use `Cronograma_V1`.
+Este projeto é estático, usa caminhos relativos e não requer build. O repositório publicado é `AndreFrateschi/SGP-Business-Operations`; GitHub Pages serve o conteúdo da raiz da branch `main` em `https://andrefrateschi.github.io/SGP-Business-Operations/`. Não use `Cronograma_V1`.
 
-No GitHub, abra Settings → Pages → Deploy from a branch → main → /(root). Aguarde a publicação e abra a URL fornecida pelo GitHub. `.nojekyll` está incluído. Se a política da organização restringir Pages ou repositórios privados, ajuste conforme a administração da conta.
+`.nojekyll` está incluído. Após um push na `main`, aguarde o workflow de Pages e verifique a URL pública. Se a política da organização restringir Pages ou repositórios privados, ajuste conforme a administração da conta.
 
-A publicação remota não foi realizada nesta entrega; a compatibilidade estática foi verificada localmente. O armazenamento de localhost não migra para Pages: exporte de uma origem e importe na outra. Os dados operacionais não são enviados ao repositório pela aplicação. Nunca inclua backups reais nos arquivos publicados.
+O armazenamento de localhost não migra para Pages: exporte de uma origem e importe na outra. Os dados operacionais não são enviados ao repositório pela aplicação. Nunca inclua backups reais nos arquivos publicados.
 
 ## Testar
 

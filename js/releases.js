@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.3',date:'29/09/2026',title:'Data e hora nos relatórios impressos',
+ intro:'As impressões identificam o momento em que foram geradas.',
+ changes:[['Relatórios e cronograma','O cabeçalho da impressão ou do PDF mostra a data e a hora de geração, tanto no relatório da operação quanto no cronograma por frente ou por fase.']]
+},{
  version:'1.0.2',date:'29/09/2026',title:'Dias desde a entrada no pipeline',
  intro:'O tempo na operação passa a usar a data de entrada registrada na demanda.',
  changes:[['Pipeline','Novas demandas recebem automaticamente a data de entrada do dia. Demandas antigas sem essa data mostram a opção Informar data; o indicador conta dias corridos desde a data cadastrada.']]

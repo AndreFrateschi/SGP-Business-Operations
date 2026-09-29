@@ -94,16 +94,19 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 .delivery-interval{font-size:12px;line-height:1.6;color:var(--muted);margin:6px 0 16px}
 
 /* A dedicated, paper-sized view of the active executive timeline. */
-.timeline-print-heading{display:none}
+.timeline-print-heading,.report-print-heading{display:none}
 /* A zero page margin prevents browser-supplied URL/date footers; content keeps its own inset. */
 @page{size:A4 landscape;margin:0}
 @media print{
+  .report-print-heading{display:flex!important;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 8mm;border-bottom:2px solid #e20074;padding-bottom:3mm;font-size:14pt}
+  .report-print-heading span{font-size:9pt;color:#4b6072}
+  body.print-timeline .report-print-heading{display:none!important}
   body.print-timeline{background:#fff!important;color:#172a3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.print-timeline main{margin:0!important;padding:10mm!important;width:100%!important}
   body.print-timeline #content>*:not(.timeline-panel){display:none!important}
   body.print-timeline .timeline-panel{position:static!important;inset:auto!important;display:block!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;background:#fff!important;color:#172a3c!important;break-inside:auto!important}
   body.print-timeline .timeline-print-heading{display:flex!important;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 8mm;border-bottom:2px solid #e20074;padding-bottom:3mm;font-size:14pt}
-  body.print-timeline .timeline-print-heading span{font-size:9pt;font-weight:400;color:#4b6072}
+  body.print-timeline .timeline-print-heading span{font-size:9pt;font-weight:400;color:#4b6072;text-align:right;line-height:1.5}
   body.print-timeline .timeline-panel .panel-head{display:none!important}
   body.print-timeline .timeline-panel .legend{display:flex!important;padding:0 0 4mm;gap:9px;font-size:7pt;color:#334b60}
   body.print-timeline .timeline-panel .timeline-scroll{display:block!important;max-height:none!important;min-height:0!important;overflow:visible!important;margin:0!important;border:1px solid #dce5ed!important;border-radius:0!important}

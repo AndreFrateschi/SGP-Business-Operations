@@ -95,10 +95,11 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 
 /* A dedicated, paper-sized view of the active executive timeline. */
 .timeline-print-heading{display:none}
-@page{size:A4 landscape;margin:10mm}
+/* A zero page margin prevents browser-supplied URL/date footers; content keeps its own inset. */
+@page{size:A4 landscape;margin:0}
 @media print{
   body.print-timeline{background:#fff!important;color:#172a3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body.print-timeline main{margin:0!important;padding:0!important;width:100%!important}
+  body.print-timeline main{margin:0!important;padding:10mm!important;width:100%!important}
   body.print-timeline #content>*:not(.timeline-panel){display:none!important}
   body.print-timeline .timeline-panel{position:static!important;inset:auto!important;display:block!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;background:#fff!important;color:#172a3c!important;break-inside:auto!important}
   body.print-timeline .timeline-print-heading{display:flex!important;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 8mm;border-bottom:2px solid #e20074;padding-bottom:3mm;font-size:14pt}

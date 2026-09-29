@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.4',date:'29/09/2026',title:'Risco coerente na visão geral',
+ intro:'O gráfico da visão geral reflete os alertas identificados para cada demanda.',
+ changes:[['Situação das demandas','Demandas com alertas, como marco bloqueado, aparecem em Com alertas / em risco no gráfico, mesmo que o status cadastrado continue Em andamento.']]
+},{
  version:'1.0.3',date:'29/09/2026',title:'Data e hora nos relatórios impressos',
  intro:'As impressões identificam o momento em que foram geradas.',
  changes:[['Relatórios e cronograma','O cabeçalho da impressão ou do PDF mostra a data e a hora de geração, tanto no relatório da operação quanto no cronograma por frente ou por fase.']]

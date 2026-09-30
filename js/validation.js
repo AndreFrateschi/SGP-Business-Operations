@@ -22,7 +22,7 @@ SGP.validate=(data,{allowLegacyWeekends=false}={})=>{
    if(r.status&&!SGP.statuses.includes(r.status))add(key,i,'Status desconhecido.');
    if(r.phase&&!SGP.stages.includes(r.phase))add(key,i,'Fase desconhecida.');
    if(key==='demandas'){
-    if(!['Projeto','Proposta','Melhoria','Evolução','Ticket N3','Outro'].includes(r.type))add(key,i,'Tipo inválido.');
+    if(!SGP.types.includes(r.type))add(key,i,'Tipo inválido.');
     if(r.risk&&!['Nenhum','Baixa','Média','Alta','Crítica'].includes(r.risk))add(key,i,'Risco inválido.');
     if(r.git&&!/^https?:\/\/[^\s]+$/i.test(r.git))add(key,i,'Link Git deve começar com https:// ou http://.');
     const dates=[r.start,r.technical,r.homologation,r.deployment,r.end].filter(Boolean);if(dates.some((d,j)=>j&&d<dates[j-1]))warnings.push(`Demandas, linha ${i+2}: sequência de entrega técnica, homologação e final fora de ordem.`);

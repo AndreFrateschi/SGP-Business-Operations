@@ -1,5 +1,6 @@
 window.SGP = {};
 Object.assign(SGP, {
+ types:['Projeto','Proposta','Melhoria','Evolução','Ticket N3','SGP-Global','Outro'],
  fronts:['Produção','Qualidade','Torque','Automação Industrial','Inovação IoT'],
  colors:['#2489ec','#20b985','#f3873e','#8859df','#ec5268'],
  stages:['Entrada','Levantamento','Proposta','Aprovação','Planejamento','Desenvolvimento','Homologação','Implantação','Fechamento','Concluído','Aguardando Cliente'],

@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.13',date:'30/09/2026',title:'Escala semestral no cronograma',
+ intro:'O cronograma executivo pode ser visto em semestres.',
+ changes:[['Cronograma','A escala Semestre mostra dois períodos de seis meses, alinhados de janeiro a junho e de julho a dezembro. As setas avançam ou retrocedem um semestre. A impressão acompanha a escala selecionada.']]
+},{
  version:'1.0.12',date:'30/09/2026',title:'Tipo SGP-Global e filtro por tipo',
  intro:'Demandas SGP-Global podem ser cadastradas, filtradas e trocadas pelo Excel.',
  changes:[['Demandas','SGP-Global foi incluído no campo Tipo.'],['Filtros','O filtro global Tipo permite selecionar SGP-Global ou qualquer outro tipo de demanda.'],['Excel','Importação, exportação e orientações do arquivo aceitam SGP-Global.']]

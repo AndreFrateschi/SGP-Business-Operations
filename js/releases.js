@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.14',date:'30/09/2026',title:'Detalhes no cronograma impresso',
+ intro:'O cronograma mantém suas barras e inclui uma página complementar com as informações das fases e dos marcos.',
+ changes:[['Impressão','O quadro visual do cronograma permanece igual. Uma página posterior lista demanda, fase ou marco e datas para os itens visíveis no período selecionado.']]
+},{
  version:'1.0.13',date:'30/09/2026',title:'Escala semestral no cronograma',
  intro:'O cronograma executivo pode ser visto em semestres.',
  changes:[['Cronograma','A escala Semestre mostra dois períodos de seis meses, alinhados de janeiro a junho e de julho a dezembro. As setas avançam ou retrocedem um semestre. A impressão acompanha a escala selecionada.']]

@@ -94,7 +94,7 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 .delivery-interval{font-size:12px;line-height:1.6;color:var(--muted);margin:6px 0 16px}
 
 /* A dedicated, paper-sized view of the active executive timeline. */
-.timeline-print-heading,.report-print-heading,.timeline-print-details{display:none}
+.timeline-print-heading,.report-print-heading{display:none}
 /* A zero page margin prevents browser-supplied URL/date footers; content keeps its own inset. */
 @page{size:A4 landscape;margin:0}
 @media print{
@@ -125,17 +125,6 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
   body.print-timeline .timeline-panel .phase-bar{display:block!important;opacity:1!important;top:2mm!important;height:3mm!important}
   body.print-timeline .timeline-panel .milestone{top:2mm!important}
   body.print-timeline .timeline-panel .today-tag{display:none!important}
-  body.print-timeline .timeline-print-details{display:block!important;break-before:page;page-break-before:always;color:#172a3c!important}
-  body.print-timeline .timeline-print-details h2{font-size:14pt;margin:0 0 2mm;border-bottom:2px solid #e20074;padding-bottom:3mm}
-  body.print-timeline .timeline-print-details p{font-size:8pt;color:#4b6072;margin:0 0 4mm}
-  body.print-timeline .timeline-print-details table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8pt}
-  body.print-timeline .timeline-print-details thead{display:table-header-group}
-  body.print-timeline .timeline-print-details tr{break-inside:avoid;page-break-inside:avoid}
-  body.print-timeline .timeline-print-details th,body.print-timeline .timeline-print-details td{border-bottom:1px solid #dce5ed;padding:2mm;text-align:left;vertical-align:top;overflow-wrap:anywhere}
-  body.print-timeline .timeline-print-details th{background:#edf2f6!important}
-  body.print-timeline .timeline-print-details th:first-child{width:34%}
-  body.print-timeline .timeline-print-details th:nth-child(2){width:12%}
-  body.print-timeline .timeline-print-details th:last-child{width:19%}
 }
 
 /* Release notes in Settings. */

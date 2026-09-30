@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.11',date:'29/09/2026',title:'Equipe e capacidade em uma área',
+ intro:'O planejamento e o cadastro de recursos ficam no mesmo menu, com visões próprias para cada tarefa.',
+ changes:[['Navegação','O menu Equipe e capacidade reúne as abas Ocupação, Alocações e Pessoas.'],['Filtros e cálculos','Ocupação por frente identifica que segue os filtros de demanda; por pessoa identifica que considera todas as demandas. O período continua valendo nas duas visões.']]
+},{
  version:'1.0.10',date:'29/09/2026',title:'Agenda de alocação por pessoa',
  intro:'A ocupação do profissional fica visível antes de confirmar uma alocação.',
  changes:[['Alocações','O cadastro mostra uma prévia por semana, considerando todas as demandas da pessoa e avisando quando a soma ultrapassa 8 horas em um dia útil. Ao editar, substitui a alocação anterior na simulação.'],['Pessoas e capacidade','A agenda individual reúne períodos e projetos da pessoa; a capacidade por pessoa considera todas as demandas, mesmo com filtros aplicados.']]

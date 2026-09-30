@@ -170,3 +170,5 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 .allocation-preview .note,#agenda-content .note{padding:9px 0;margin:0}
 .allocation-preview h3:not(:first-child),#agenda-content h3{margin:18px 0 8px}
 .allocation-preview .table-wrap,#agenda-content .table-wrap{max-height:260px;overflow:auto}
+
+.team-tabs{flex-wrap:wrap;gap:8px;padding:0;margin:0 0 14px}.team-tabs button{min-width:105px}.team-tabs button[aria-selected="true"]{font-weight:700;border-color:var(--accent)}

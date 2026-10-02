@@ -123,7 +123,7 @@ async function importFile(file){if(!file)return;try{if(file.size>20*1024*1024)th
   if(a.edit)edit(a.edit,a.index!==undefined?Number(a.index):data[a.edit].findIndex(r=>r.id===a.id));
   if(a.group){state.group=a.group;render()}
   if(a.collapseGroup){const idx=state.closed.indexOf(a.collapseGroup);if(idx>=0)state.closed.splice(idx,1);else state.closed.push(a.collapseGroup);render()}
-  if(a.period!==undefined){const n=Number(a.period);if(!n)state.anchor=SGP.today().slice(0,7)+'-01';else if(state.scale==='Semana')state.anchor=SGP.add(state.anchor,n*28);else{const d=SGP.date(state.anchor);state.anchor=SGP.iso(new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+n*(state.scale==='Semestre'?6:state.scale==='Trimestre'?3:1),1)))}render()}
+  if(a.period!==undefined){const n=Number(a.period);if(!n)state.anchor=SGP.today().slice(0,7)+'-01';else if(state.scale==='Semana')state.anchor=SGP.add(state.anchor,n*28);else{const d=SGP.date(state.anchor);state.anchor=SGP.iso(new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+n*(state.scale==='Ano'?12:state.scale==='Semestre'?6:state.scale==='Trimestre'?3:1),1)))}render()}
   if(a.pipeline){state.pipelineReturn={...state.filters};state.filters.phase=a.pipeline;state.page='Demandas';render()}
   if(a.capMode){state.capMode=a.capMode;render()}
   if(a.teamTab){state.teamTab=a.teamTab;render()}

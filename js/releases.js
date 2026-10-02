@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.15',date:'01/10/2026',title:'Fases sem data no cronograma',
+ intro:'Demandas com fases ainda sem datas continuam visíveis no cronograma executivo.',
+ changes:[['Cronograma','Fases sem datas podem ser salvas e importadas. A linha da demanda mostra Sem data até que início e fim sejam definidos; a indicação também aparece na impressão.']]
+},{
  version:'1.0.13',date:'30/09/2026',title:'Escala semestral no cronograma',
  intro:'O cronograma executivo pode ser visto em semestres.',
  changes:[['Cronograma','A escala Semestre mostra dois períodos de seis meses, alinhados de janeiro a junho e de julho a dezembro. As setas avançam ou retrocedem um semestre. A impressão acompanha a escala selecionada.']]

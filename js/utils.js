@@ -23,7 +23,7 @@ SGP.schemas={
  demandas:[['id','ID','required'],['code','Código','required'],['name','Nome da Demanda','required'],['description','Descrição resumida'],['type','Tipo','required'],['front','Frente','required'],['plan','Plan'],['pmo','PMO'],['leader','Tech Leader'],['bo','Responsável BO'],['phase','Fase Atual','required'],['status','Status','required'],['entry','Data de Entrada','date'],['start','Data Início','date'],['technical','Data Entrega Técnica','date'],['homologation','Data Homologação','date'],['deployment','Data Implantação','date'],['end','Data Final Prevista','date'],['scheduleAuto','Cronograma pelas fases'],['deadline','Entrega acordada com cliente','date'],['estimated','Horas Estimadas','number'],['consumed','Horas Consumidas','number'],['progress','Percentual de Conclusão','percent'],['next','Próximo Marco'],['nextDate','Data Próximo Marco','date'],['dependency','Dependência'],['dependencyOwner','Responsável pela Dependência'],['risk','Risco'],['riskDescription','Descrição do Risco'],['git','Link Git'],['notes','Observação']],
  pessoas:[['id','ID','required'],['name','Nome','required'],['role','Função','required'],['front','Frente Principal','required'],['leader','Tech Leader'],['capacity','Capacidade Mensal','number!'],['active','Ativo','required']],
  alocacoes:[['person','Pessoa ID','required'],['demand','Demanda ID','required'],['start','Data Início','date!'],['end','Data Fim','date!'],['hours','Horas','number!'],['percent','Percentual','number']],
- fases:[['demand','Demanda ID','required'],['phase','Fase','required'],['start','Data Início','date!'],['end','Data Fim','date!'],['status','Status','required'],['budget','Consome horas da estimativa'],['plannedHours','Horas planejadas','number']],
+ fases:[['demand','Demanda ID','required'],['phase','Fase','required'],['start','Data Início','date'],['end','Data Fim','date'],['status','Status','required'],['budget','Consome horas da estimativa'],['plannedHours','Horas planejadas','number']],
  marcos:[['demand','Demanda ID','required'],['name','Marco','required'],['date','Data','date!'],['status','Status','required'],['notes','Observação']]
 };
 SGP.sheetNames={demandas:'Demandas',pessoas:'Pessoas',alocacoes:'Alocacoes',fases:'Fases',marcos:'Marcos'};
@@ -37,10 +37,10 @@ SGP.phaseBudget=(data,id)=>{
 SGP.syncPhaseSchedule=data=>{
  data.demandas.forEach(d=>{
   if(d.scheduleAuto!=='Sim')return;
-  const phases=data.fases.filter(p=>p.demand===d.id&&SGP.validDate(p.start)&&SGP.validDate(p.end));
+  const allPhases=data.fases.filter(p=>p.demand===d.id),phases=allPhases.filter(p=>SGP.validDate(p.start)&&SGP.validDate(p.end));
   d.start=phases.map(p=>p.start).sort()[0]||'';d.end=phases.map(p=>p.end).sort().at(-1)||'';
   for(const [field,name] of [['technical','Desenvolvimento'],['homologation','Homologação'],['deployment','Implantação']])d[field]=phases.filter(p=>p.phase===name).map(p=>p.end).sort().at(-1)||'';
-  const ordered=[...phases].sort((a,b)=>a.start.localeCompare(b.start));
+  const ordered=[...allPhases].sort((a,b)=>(a.start||'9999').localeCompare(b.start||'9999'));
   d.phase=(ordered.find(p=>p.status==='Em andamento')||ordered.find(p=>!['Concluído','Cancelado'].includes(p.status))||ordered.at(-1))?.phase||'Entrada';
  });return data;
 };

@@ -94,6 +94,10 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
 .delivery-interval{font-size:12px;line-height:1.6;color:var(--muted);margin:6px 0 16px}
 
 /* A dedicated, paper-sized view of the active executive timeline. */
+.undated-badge{position:absolute;top:6px;left:8px;z-index:3;max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 7px;border:1px solid #b7c4cf;border-radius:4px;background:#f4f7fa;color:#435b6f;font-size:10px;font-weight:700;line-height:1.2}
+.undated-badge-right{left:auto;right:8px}
+.undated-badge:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:root[data-theme="dark"] .undated-badge{background:#273744;border-color:#617586;color:#e2eaf0}
 .timeline-print-heading,.report-print-heading{display:none}
 /* A zero page margin prevents browser-supplied URL/date footers; content keeps its own inset. */
 @page{size:A4 landscape;margin:0}
@@ -123,6 +127,7 @@ header .heading{min-width:0}header h1{font-size:24px}header h1 span{font-size:20
   body.print-timeline .timeline-panel .tick strong{font-size:7pt!important;white-space:nowrap}
   body.print-timeline .timeline-panel .tick span{display:none!important}
   body.print-timeline .timeline-panel .phase-bar{display:block!important;opacity:1!important;top:2mm!important;height:3mm!important}
+  body.print-timeline .timeline-panel .undated-badge{top:1.5mm!important;display:block!important;border-color:#aebdcc!important;background:#f4f7fa!important;color:#354d60!important;font-size:6pt!important;padding:1mm 2mm!important}
   body.print-timeline .timeline-panel .milestone{top:2mm!important}
   body.print-timeline .timeline-panel .today-tag{display:none!important}
 }

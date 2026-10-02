@@ -1,9 +1,16 @@
+SGP.weekExtent=(data,demands)=>{
+ const ids=new Set(demands.map(d=>d.id));
+ const dates=demands.flatMap(d=>[d.start,d.end,d.technical,d.deployment]).concat(data.fases.filter(p=>ids.has(p.demand)).flatMap(p=>[p.start,p.end]),data.marcos.filter(m=>ids.has(m.demand)).map(m=>m.date)).filter(SGP.validDate).sort();
+ return {first:dates[0]||'',last:dates.at(-1)||''};
+};
+SGP.weekMonday=date=>SGP.add(date,-((SGP.date(date).getUTCDay()+6)%7));
 SGP.timeline=(data,demands,state)=>{
  const {esc:e}=SGP;let start=state.anchor||SGP.today().slice(0,7)+'-01',n=state.scale==='Semana'?8:state.scale==='Ano'?1:state.scale==='Semestre'?2:4;
- if(['Trimestre','Semestre','Ano'].includes(state.scale)){const d=SGP.date(start),months=state.scale==='Ano'?12:state.scale==='Semestre'?6:3;start=SGP.iso(new Date(Date.UTC(d.getUTCFullYear(),Math.floor(d.getUTCMonth()/months)*months,1)))}else if(state.scale==='Semana'){const d=SGP.date(start);start=SGP.add(start,-((d.getUTCDay()+6)%7))}
- if(state.scale==='Semana'&&demands.length){
-  const ids=new Set(demands.map(d=>d.id)),dates=demands.flatMap(d=>[d.start,d.end,d.technical,d.deployment]).concat(data.fases.filter(p=>ids.has(p.demand)).flatMap(p=>[p.start,p.end]),data.marcos.filter(m=>ids.has(m.demand)).map(m=>m.date)).filter(d=>SGP.validDate(d)).sort();
-  if(dates.length){if(dates[0]<start){start=dates[0];const d=SGP.date(start);start=SGP.add(start,-((d.getUTCDay()+6)%7))}n=Math.max(8,Math.ceil(SGP.days(start,dates.at(-1))/7))}
+ if(['Trimestre','Semestre','Ano'].includes(state.scale)){const d=SGP.date(start),months=state.scale==='Ano'?12:state.scale==='Semestre'?6:3;start=SGP.iso(new Date(Date.UTC(d.getUTCFullYear(),Math.floor(d.getUTCMonth()/months)*months,1)))}
+ if(state.scale==='Semana'){
+  const {first,last}=SGP.weekExtent(data,demands);
+  start=SGP.weekMonday(!state.weekNavigated&&first&&first<start?first:start);
+  if(last)n=Math.max(8,Math.ceil(SGP.days(start,last)/7));
  }
  const periods=[];let cursor=start;
  for(let i=0;i<n;i++){

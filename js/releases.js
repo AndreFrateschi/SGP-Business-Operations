@@ -1,5 +1,9 @@
 // Application releases are independent of the version of data stored in this browser.
 SGP.releases=[{
+ version:'1.0.16',date:'02/10/2026',title:'Quatro frentes de operação',
+ intro:'Torque passa a integrar Automação Industrial em toda a aplicação.',
+ changes:[['Frentes','Os filtros, o cronograma, os indicadores e a capacidade mostram Produção, Qualidade, Automação Industrial e Inovação IoT.'],['Dados existentes','Demandas e pessoas antigas de Torque aparecem em Automação Industrial, inclusive após importação de arquivos anteriores; fases, horas e alocações são preservadas.']]
+},{
  version:'1.0.15',date:'01/10/2026',title:'Fases sem data no cronograma',
  intro:'Demandas com fases ainda sem datas continuam visíveis no cronograma executivo.',
  changes:[['Cronograma','Fases sem datas podem ser salvas e importadas. A linha da demanda mostra Sem data até que início e fim sejam definidos; a indicação também aparece na impressão.']]

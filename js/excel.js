@@ -22,7 +22,7 @@ SGP.parseWorkbook=wb=>{
   })));
  }
  data.alocacoes.forEach(a=>{const percent=SGP.allocationPercent(data,a);a.percent=percent===null?'':Math.round(percent*10)/10});
- SGP.migrateMilestones(data);SGP.syncPhaseSchedule(data);const result=SGP.validate(data);result.errors.unshift(...structure);return {data,...result};
+ SGP.normalizeFronts(data);SGP.migrateMilestones(data);SGP.syncPhaseSchedule(data);const result=SGP.validate(data);result.errors.unshift(...structure);return {data,...result};
 };
 SGP.download=(name,content,type)=>{const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 SGP.exportExcel=(data,name='SGP-Business-Operations.xlsx')=>XLSX.writeFile(SGP.workbook(data),name,{compression:true});

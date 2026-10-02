@@ -1,8 +1,8 @@
 window.SGP = {};
 Object.assign(SGP, {
  types:['Projeto','Proposta','Melhoria','Evolução','Ticket N3','SGP-Global','Outro'],
- fronts:['Produção','Qualidade','Torque','Automação Industrial','Inovação IoT'],
- colors:['#2489ec','#20b985','#f3873e','#8859df','#ec5268'],
+ fronts:['Produção','Qualidade','Automação Industrial','Inovação IoT'],
+ colors:['#2489ec','#20b985','#8859df','#ec5268'],
  stages:['Entrada','Levantamento','Proposta','Aprovação','Planejamento','Desenvolvimento','Homologação','Implantação','Fechamento','Concluído','Aguardando Cliente'],
  statuses:['Não iniciado','Em andamento','Aguardando cliente','Aguardando aprovação','Bloqueado','Em risco','Concluído','Cancelado'],
  phaseColors:['#9eaec0','#7d94ac','#a1a7c5','#ddae41','#a8b7c6','#339bed','#a28ae7','#36bd8d','#318c83','#25986b','#edb737'],
@@ -18,6 +18,8 @@ Object.assign(SGP, {
  uid:()=>globalThis.crypto?.randomUUID?.()||'id-'+Date.now()+'-'+Math.random().toString(36).slice(2)
 });
 SGP.matchesPersonName=(name,query)=>String(name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').includes(String(query||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLocaleLowerCase('pt-BR'));
+SGP.normalizeFront=front=>front==='Torque'?'Automação Industrial':front;
+SGP.normalizeFronts=data=>{for(const key of ['demandas','pessoas'])if(Array.isArray(data?.[key]))data[key].forEach(item=>{if(item&&typeof item==='object')item.front=SGP.normalizeFront(item.front)});return data};
 SGP.daysSinceEntry=(entry,today=SGP.today())=>SGP.validDate(entry)&&SGP.validDate(today)?Math.max(0,SGP.days(entry,today)-1):null;
 SGP.schemas={
  demandas:[['id','ID','required'],['code','Código','required'],['name','Nome da Demanda','required'],['description','Descrição resumida'],['type','Tipo','required'],['front','Frente','required'],['plan','Plan'],['pmo','PMO'],['leader','Tech Leader'],['bo','Responsável BO'],['phase','Fase Atual','required'],['status','Status','required'],['entry','Data de Entrada','date'],['start','Data Início','date'],['technical','Data Entrega Técnica','date'],['homologation','Data Homologação','date'],['deployment','Data Implantação','date'],['end','Data Final Prevista','date'],['scheduleAuto','Cronograma pelas fases'],['deadline','Entrega acordada com cliente','date'],['estimated','Horas Estimadas','number'],['consumed','Horas Consumidas','number'],['progress','Percentual de Conclusão','percent'],['next','Próximo Marco'],['nextDate','Data Próximo Marco','date'],['dependency','Dependência'],['dependencyOwner','Responsável pela Dependência'],['risk','Risco'],['riskDescription','Descrição do Risco'],['git','Link Git'],['notes','Observação']],
